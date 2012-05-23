@@ -1,0 +1,68 @@
+Name:                gplang
+Version:             0.1.0
+Synopsis:            A stack-based language for genetic programming systems.
+-- Description:
+Homepage:            http://github.com/erochest/gplang
+License:             BSD3
+License-file:        LICENSE
+Author:              Eric Rochester
+Maintainer:          erochest@virginia.edu
+-- Copyright:
+Category:            Language
+Build-type:          Simple
+
+-- Extra files to be distributed with the package, such as examples or
+-- a README.
+-- Extra-source-files:
+
+-- Constraint on the version of Cabal needed to build this package.
+Cabal-version:       >=1.9.2
+
+Flag development
+  Description: Build in development mode.
+  Default:     False
+
+Flag profiling
+  Description: Build with profiling enabled.
+  Default:     False
+
+Library
+  -- Exposed-modules:
+
+  Build-depends:
+      base >=4.3
+
+  -- Other-modules:
+
+  -- Build-tools:
+
+  if flag(development)
+    cpp-options: -DDEVELOPMENT
+    ghc-options: -w -Wall -fhpc
+  else
+    if flag(profiling)
+      cpp-options: -DDEVELOPMENT
+      ghc-options: -w -Wall -rtsopts -fhpc
+    else
+      ghc-options: -Wall -fwarn-tabs -funbox-strict-fields
+                   -fno-warn-orphans -fno-warn-unused-do-bind -rtsopts
+
+Test-Suite test-gplang
+  type:           exitcode-stdio-1.0
+  hs-source-dirs: tests
+  main-is:        TestGpLang.hs
+  build-depends:
+      base                       >= 4.3
+    , test-framework             >= 0.6
+    , test-framework-hunit       >= 0.2
+    , test-framework-quickcheck2 >= 0.2
+    , HUnit                      >= 1.2
+    , QuickCheck                 >= 2.4
+    , gplang
+  ghc-options:    -Wall -rtsopts -fhpc
+
+Source-Repository head
+  type:     git
+  location: git://github.com/erochest/gplang.git
+  
+-- vim: set sw=2:
