@@ -3,13 +3,19 @@
 
 ## Types
 
-* Boolean
-* Double
-* Int
-* Name
-* List
-* Vectors (bit vector, double vector, int vector).
-* Quotation
+### Boolean
+
+### Double
+
+### Int
+
+### Symbol
+
+### List
+
+### Vector
+
+### Quotation
 
 ## Core Functions
 
@@ -102,12 +108,21 @@ only execute a block if the guards pass.
 
 * `[ ... ]`: Quotation. This creates a function and pushes it onto the stack.
 * `{ ... }`: List
+* `#< ... >`: Vector
 
 ## Operations
 
 All operations are of type:
 
-    Stack -> Stack
+    Stack a s -> Stack a s 
+
+`a` is the type of the top of the stack, and `s` is the type of the rest of the
+stack. `Stack` is a GADT.
 
 Programs are a composition of those functions, which can then be compiled.
+
+## Resources
+
+* http://www.codecommit.com/blog/cat/the-joy-of-concatenative-languages-part-3
+* http://alaska-kamtchatka.blogspot.com/2009/01/essence-of-concatenative-languages.html
 
