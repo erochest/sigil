@@ -3,6 +3,42 @@
 
 ## Types
 
+### GpWord
+
+`GpWord` is the basic value type for gplang.
+
+```haskell
+newtype Symbol = Text
+
+data GpWord x where
+    B :: Bool -> GpWord (s -> (Stack Bool s))
+    I :: Int -> GpWord (s -> (Stack Int s))
+    D :: Double -> GpWord (s -> (Stack Double s))
+    S :: Symbol -> GpWord (s -> s')
+    L :: [GpWord y] -> GpWord (s -> (Stack [GpWord y] s))
+    BV :: (Vector Bool) -> GpWord (s -> (Stack (Vector Bool) s))
+    IV :: (Vector Int) -> GpWord (s -> (Stack (Vector Int) s))
+    DV :: (Vector Double) -> GpWord (s -> (Stack (Vector Double) s))
+    Q :: [GpWord y] -> GpWord (s -> (Stack [GpWord y] s))
+  implements (Eq, Ord)
+
+instance Show GpWord where
+    ...
+class ToWord a where
+    toGpWord :: a -> GpWord
+class FromWord a where
+    fromGpWord :: GpWord -> Maybe a
+```
+
+### Stack
+
+The `Stack v s` type is the basic row type for everything.
+
+```haskell
+data Stack v s where
+    Empty :: 
+```
+
 ### Boolean
 
 ### Double
@@ -125,4 +161,5 @@ Programs are a composition of those functions, which can then be compiled.
 
 * http://www.codecommit.com/blog/cat/the-joy-of-concatenative-languages-part-3
 * http://alaska-kamtchatka.blogspot.com/2009/01/essence-of-concatenative-languages.html
+* http://lambda-the-ultimate.org/node/1899#comment-23169
 
