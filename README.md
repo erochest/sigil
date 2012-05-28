@@ -72,7 +72,19 @@ Other functions.
 * `depth`
 * `yank`
 * `yankdup`
-* `bi`: `1 [ 5 + ] [ 10 + ] bi` becomes `6 11`.
+* `bi`: `1 [ 5 + ] [ 10 + ] bi` becomes `6 11`. This could be defined `[rot dup
+  rot call rot rot swap call swap]`. That's a mouthful.
+
+A a (A a -> A e) (A a -> A d)
+  rot  -> A (A a -> A e) (A a -> A d) a
+  dup  -> A (A a -> A e) (A a -> A d) a a
+  rot  -> A (A a -> A e) a a (A a -> A d)
+  call -> A (A a -> A e) a d
+  rot  -> A a d (A a -> A e)
+  rot  -> A d (A a -> A e) a
+  swap -> A d a (A a -> A e)
+  call -> A d e
+  swap -> A e d
 
 ### Num Functions
 
