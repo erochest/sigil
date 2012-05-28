@@ -58,23 +58,29 @@ instance Monoid Stack where
     mempty = Stack []
     mappend (Stack a) (Stack b) = Stack (a `mappend` b)
 
+execq :: Quote -> Stack -> Stack
+execq q s = foldl (flip exec) s q
+
 exec :: GpWord -> Stack -> Stack
 exec b@(B _) (Stack ss) = Stack (b:ss)
 exec i@(I _) (Stack ss) = Stack (i:ss)
-exec   (S s) ss         = execOp s ss
-exec   (Q q) s          = foldl (flip exec) s q
+exec   (S s) ss         = s `execOp` ss
+exec q@(Q _) (Stack ss) = Stack (q:ss)
 
 execOp :: Symbol -> Stack -> Stack
-execOp "dip" (Stack (q@(Q _) : i : ss)) = Stack [i] `mappend` exec q (Stack ss)
-execOp "dup" (Stack (s:ss))             = Stack (s:s:ss)
-execOp "pop" (Stack (_:ss))             = Stack ss
-execOp "swap" (Stack (x:y:ss))          = Stack (y:x:ss)
-execOp "call" (Stack (q@(Q _):ss))      = exec q $ Stack ss
-execOp "quote" (Stack (s:ss))           = Stack (Q [s] : ss)
-execOp "compose" (Stack (s2:s1:ss))     = Stack (s1 `mappend` s2 : ss)
-execOp "curry" (Stack (Q q:i:ss))       = Stack (Q (i:q) : ss)
+execOp "dip" (Stack ((Q q) : i : ss)) = Stack [i] `mappend` execq q (Stack ss)
+execOp "dup" (Stack (s:ss))           = Stack (s:s:ss)
+execOp "pop" (Stack (_:ss))           = Stack ss
+execOp "swap" (Stack (x:y:ss))        = Stack (y:x:ss)
+execOp "call" (Stack ((Q q):ss))      = q `execq` Stack ss
+execOp "quote" (Stack (s:ss))         = Stack (Q [s] : ss)
+execOp "compose" (Stack (s2:s1:ss))   = Stack (s1 `mappend` s2 : ss)
+execOp "curry" (Stack (Q q:i:ss))     = Stack (Q (i:q) : ss)
 
-execOp _ s                              = s
+execOp "+" (Stack (I i:I j:ss))       = Stack (I (i + j):ss)
+execOp "*" (Stack (I i:I j:ss))       = Stack (I (i * j):ss)
+
+execOp _ s                            = s
 
 testWord :: GpWord
 testWord = Q [I 42, B True, S "hi"]
