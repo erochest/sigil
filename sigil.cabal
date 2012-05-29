@@ -1,8 +1,8 @@
-Name:                gplang
+Name:                sigil
 Version:             0.1.0
 Synopsis:            A stack-based language for genetic programming systems.
 -- Description:
-Homepage:            http://github.com/erochest/gplang
+Homepage:            http://github.com/erochest/sigil
 License:             BSD3
 License-file:        LICENSE
 Author:              Eric Rochester
@@ -47,10 +47,10 @@ Library
       ghc-options: -Wall -fwarn-tabs -funbox-strict-fields
                    -fno-warn-orphans -fno-warn-unused-do-bind -rtsopts
 
-Test-Suite test-gplang
+Test-Suite test-sigil
   type:           exitcode-stdio-1.0
   hs-source-dirs: tests
-  main-is:        TestGpLang.hs
+  main-is:        TestSigil.hs
   build-depends:
       base                       >= 4.3
     , test-framework             >= 0.6
@@ -58,11 +58,11 @@ Test-Suite test-gplang
     , test-framework-quickcheck2 >= 0.2
     , HUnit                      >= 1.2
     , QuickCheck                 >= 2.4
-    , gplang
+    , sigil
   ghc-options:    -Wall -rtsopts -fhpc
 
 Source-Repository head
   type:     git
-  location: git://github.com/erochest/gplang.git
+  location: git://github.com/erochest/sigil.git
   
 -- vim: set sw=2:

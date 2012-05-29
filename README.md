@@ -5,7 +5,7 @@
 
 ### GpWord
 
-`GpWord` is the basic value type for gplang.
+`GpWord` is the basic value type for Sigil.
 
 ```haskell
 newtype Symbol = Text

@@ -97,5 +97,5 @@ testStack3 = Stack [I 42, B True, S "hi"]
 
 -- So this will compile
 main :: IO ()
-main = putStrLn "gplang"
+main = putStrLn "sigil"
 
