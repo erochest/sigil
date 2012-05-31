@@ -15,6 +15,8 @@ import           Test.Framework.Providers.HUnit (testCase)
 import           Test.Framework.Providers.QuickCheck2 (testProperty)
 import           Test.QuickCheck
 
+-- Instance of Arbitrary for QC tests.
+
 instance Arbitrary T.Text where
     arbitrary = fmap T.pack . listOf1 $ suchThat (choose chrRange) isNameChar
         where chrRange = ('*', 'z')
@@ -27,17 +29,25 @@ instance Arbitrary SWord where
     arbitrary = frequency [ (1, B <$> arbitrary)
                           , (1, I <$> arbitrary)
                           , (1, S <$> arbitrary)
-                          , (2, Q <$> resize 5 (listOf arbitrary))
+                          , (2, Q <$> resize 3 (listOf arbitrary))
                           ]
 
---
+instance Arbitrary Stack where
+    arbitrary = Stack <$> resize 3 (listOf arbitrary)
 
-pWordMEmpty :: SWord -> Bool
-pWordMEmpty code = (mempty `mappend` code) == code &&
-                   (code `mappend` mempty) == code
+-- Generic QC properties for Monoids.
 
-pWordMAppend :: (SWord, SWord, SWord) -> Bool
-pWordMAppend (x, y, z) = mappend x (mappend y z) == mappend (mappend x y) z
+pMEmpty :: (Arbitrary a, Monoid a, Eq a) => a -> Bool
+pMEmpty input = (mempty `mappend` input) == input &&
+                (input `mappend` mempty) == input
+
+pMAppend :: (Arbitrary a, Monoid a, Eq a) => (a, a, a) -> Bool
+pMAppend (x, y, z) = mappend x (mappend y z) == mappend (mappend x y) z
+
+pMConcat :: (Arbitrary a, Monoid a, Eq a) => [a] -> Bool
+pMConcat input = mconcat input == foldr mappend mempty input
+
+-- SWord tests.
 
 testShowB :: Assertion
 testShowB = do
@@ -61,19 +71,26 @@ testShowQ = do
 pWordEq :: SWord -> Bool
 pWordEq a = a == a
 
---
+-- Stack tests.
+
+
+
+-- Tests.
 
 typeTests :: [Test]
 typeTests =
-    [ testGroup "word"  [ testProperty "word-mempty" pWordMEmpty
-                        , testProperty "word-mappend" pWordMAppend
+    [ testGroup "word"  [ testProperty "word-mempty" (pMEmpty :: SWord -> Bool)
+                        , testProperty "word-mappend" (pMAppend :: (SWord, SWord, SWord) -> Bool)
+                        , testProperty "word-mconcat" (pMConcat :: [SWord] -> Bool)
                         , testCase "show-b" testShowB
                         , testProperty "show-i" pShowI
                         , testProperty "show-s" pShowS
                         , testCase "show-q" testShowQ
                         , testProperty "word-eq" pWordEq
                         ]
-    , testGroup "stack" [
+    , testGroup "stack" [ testProperty "stack-mempty" (pMEmpty :: Stack -> Bool)
+                        , testProperty "stack-mappend" (pMAppend :: (Stack, Stack, Stack) -> Bool)
+                        , testProperty "stack-mconcat" (pMConcat :: [Stack] -> Bool)
                         ]
     ]
 

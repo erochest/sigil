@@ -3,6 +3,7 @@ module Language.Sigil.Types
     ( Symbol
     , Quote
     , SWord(..)
+    , Stack(..)
     ) where
 
 import           Data.Monoid
@@ -41,5 +42,12 @@ instance Show SWord where
 
             showl _  []     = ' ' : ']' : s
             showl sh (r:rs) = ' ' : sh r (showl sh rs)
+
+data Stack = Stack [SWord]
+    deriving (Show, Eq)
+
+instance Monoid Stack where
+    mempty = Stack []
+    mappend (Stack a) (Stack b) = Stack (a `mappend` b)
 
 

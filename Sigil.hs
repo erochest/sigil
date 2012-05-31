@@ -6,62 +6,12 @@ import           Data.Monoid
 import qualified Data.List as L
 import qualified Data.Text as T
 
-type Symbol = T.Text
-
--- | Types for values/words.
-type Quote = [GpWord]
-
-data GpWord
-    = B Bool
-    | I Int
-    | S Symbol
-    | Q Quote
-
-instance Monoid GpWord where
-    mempty = Q []
-
-    mappend (Q []) b      = b
-    mappend a      (Q []) = a
-    mappend (Q qa) (Q qb) = Q (qa `mappend` qb)
-    mappend a      b      = Q [a, b]
-
-class ToGpWord a where
-    toGpWord :: a -> GpWord
-
-instance ToGpWord Bool where
-    toGpWord = B
-instance ToGpWord Int where
-    toGpWord = I
-instance ToGpWord T.Text where
-    toGpWord = S
-instance ToGpWord a => ToGpWord [a] where
-    toGpWord = Q . map toGpWord
-
-instance Show GpWord where
-
-    showsPrec _ (B True) s     = "#t" ++ s
-    showsPrec _ (B False) s    = "#f" ++ s
-    showsPrec _ (I i) s        = show i ++ s
-    showsPrec _ (S t) s        = T.unpack t ++ s
-    showsPrec n (Q qs) s = showq shows qs
-        where
-            showq _ []          = "[ ]" ++ s
-            showq shows' (q:qs) = '[' : ' ' : shows' q (showl shows' qs)
-
-            showl _  []     = ' ' : ']' : s
-            showl sh (r:rs) = ' ' : sh r (showl sh rs)
-
-data Stack = Stack [GpWord]
-    deriving (Show)
-
-instance Monoid Stack where
-    mempty = Stack []
-    mappend (Stack a) (Stack b) = Stack (a `mappend` b)
+-- TODO: make exec the function associated with a type class.
 
 execq :: Quote -> Stack -> Stack
 execq q s = foldl (flip exec) s q
 
-exec :: GpWord -> Stack -> Stack
+exec :: SWord -> Stack -> Stack
 exec b@(B _) (Stack ss) = Stack (b:ss)
 exec i@(I _) (Stack ss) = Stack (i:ss)
 exec   (S s) ss         = s `execOp` ss
@@ -86,7 +36,7 @@ execOp "*" (Stack (I i:I j:ss))       = Stack (I (i * j):ss)
 
 execOp _ s                            = s
 
-testWord :: GpWord
+testWord :: SWord
 testWord = Q [I 42, B True, S "hi"]
 
 testStack2 :: Stack
