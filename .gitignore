@@ -1,2 +1,7 @@
 .hsenv/
 dist/
+.hpc/
+hpc/
+*.log
+*.vim
+*.tix
