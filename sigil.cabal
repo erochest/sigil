@@ -29,7 +29,7 @@ Flag profiling
 Library
   Exposed-modules:
       Language.Sigil
-    -- , Language.Sigil.Exec
+    , Language.Sigil.Exec
     -- , Language.Sigil.Ops
     , Language.Sigil.Types
 

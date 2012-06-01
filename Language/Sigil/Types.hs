@@ -4,6 +4,7 @@ module Language.Sigil.Types
     , Quote
     , SWord(..)
     , Stack(..)
+    , Code(..)
     ) where
 
 import           Data.Monoid
@@ -49,5 +50,11 @@ data Stack = Stack [SWord]
 instance Monoid Stack where
     mempty = Stack []
     mappend (Stack a) (Stack b) = Stack (a `mappend` b)
+
+class Code a where
+
+    -- This either generates a stack transformation function or it executes an
+    -- instruction.
+    exec :: a -> Stack -> Stack
 
 
