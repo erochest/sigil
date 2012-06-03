@@ -1,7 +1,7 @@
 
 module Language.Sigil
-    ( module Language.Sigil.Types
-    , module Language.Sigil.Exec
+    ( module Language.Sigil.Exec
+    , module Language.Sigil.Types
     ) where
 
 import           Language.Sigil.Exec
