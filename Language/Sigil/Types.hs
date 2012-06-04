@@ -56,7 +56,7 @@ instance Monoid Stack where
     mempty = Stack []
     mappend (Stack a) (Stack b) = Stack (a `mappend` b)
 
-type StackTransformer = Stack -> Stack
+type StackTransformer = Stack -> Sigil Stack
 
 class Code a where
 

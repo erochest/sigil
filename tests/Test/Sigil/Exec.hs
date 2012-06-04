@@ -4,6 +4,7 @@ module Test.Sigil.Exec
     ( execTests
     ) where
 
+import           Data.Functor
 import           Data.Monoid
 import           Language.Sigil
 import           Test.HUnit (Assertion, assertBool)
@@ -15,28 +16,28 @@ import           Text.Printf
 
 --
 
-assertCode :: (Code a, Show a) => String -> a -> Quote -> Assertion
-assertCode msg program expected = assertBool msg' $ Stack expected == actual
-    where
-        msg'   = printf "%s: %s => %s" msg (show program) (show actual)
-        actual = exec program mempty
+assertCode :: String -> SWord -> Quote -> Assertion
+assertCode msg program expected = do
+    actual <- fst `fmap` runSigilCode defaultEnv program
+    let msg' = printf "%s: %s => %s" msg (show program) (show actual)
+    assertBool msg' $ Stack expected == actual
 
 --
 
 assertExecBool :: Assertion
 assertExecBool = do
-    ac (B False)         [B False]
-    ac (B True)          [B True]
-    al [B True, B False] [B False, B True]
+    ac (B False)             [B False]
+    ac (B True)              [B True]
+    al (Q [B True, B False]) [B False, B True]
     where ac = assertCode "assertExecBool"
           al = assertCode "assertExecBool"
 
 assertExecInt :: Assertion
 assertExecInt = do
-    ac (I 42)             [I 42]
-    ac (I 13)             [I 13]
-    ac (I 14)             [I 14]
-    al [I 13, I 14, I 42] [I 42, I 14, I 13]
+    ac (I 42)                 [I 42]
+    ac (I 13)                 [I 13]
+    ac (I 14)                 [I 14]
+    al (Q [I 13, I 14, I 42]) [I 42, I 14, I 13]
     where ac = assertCode "assertExecInt"
           al = assertCode "assertExecInt"
 
@@ -44,91 +45,91 @@ assertExecSymbol :: Assertion
 assertExecSymbol = do
     -- Symbols execute by attempting to execute their functions. If they are
     -- not valid to execute on the current stack, they are no-ops.
-    ac (S "+")                  []
-    ac (S "pop")                []
-    ac (S "hi")                 []
-    al [S "+", S "pop", S "hi"] []
+    ac (S "+")                      []
+    ac (S "pop")                    []
+    ac (S "hi")                     []
+    al (Q [S "+", S "pop", S "hi"]) []
     where ac = assertCode "assertExecSymbol"
           al = assertCode "assertExecSymbol"
 
 assertExecQuote :: Assertion
 assertExecQuote = do
-    ac (Q [I 1, I 2, I 3]) [Q [I 1, I 2, I 3]]
-    ac (Q [])              [Q []]
-    ac (Q [S "hi"])        [Q [S "hi"]]
-    al [Q [], Q [I 4]]     [Q [I 4], Q []]
+    ac (Q [Q [I 1, I 2, I 3]]) [Q [I 1, I 2, I 3]]
+    ac (Q [Q []])              [Q []]
+    ac (Q [Q [S "hi"]])        [Q [S "hi"]]
+    al (Q [Q [], Q [I 4]])     [Q [I 4], Q []]
     where ac = assertCode "assertExecQuote"
           al = assertCode "assertExecQuote"
 
 assertStackDip :: Assertion
 assertStackDip = do
-    ac [I 1, I 2, I 3, Q [S "+"], S "dip"]   [I 3, I 3]
-    ac [I 1, I 2, I 3, Q [S "pop"], S "dip"] [I 3, I 1]
+    ac (Q [I 1, I 2, I 3, Q [S "+"], S "dip"])   [I 3, I 3]
+    ac (Q [I 1, I 2, I 3, Q [S "pop"], S "dip"]) [I 3, I 1]
     where ac = assertCode "assertStackDip"
 
 assertStackDup :: Assertion
 assertStackDup = do
-    ac [I 1, I 2, I 3, S "dup"]   [I 3, I 3, I 2, I 1]
-    ac [B False, B True, S "dup"] [B True, B True, B False]
+    ac (Q [I 1, I 2, I 3, S "dup"])   [I 3, I 3, I 2, I 1]
+    ac (Q [B False, B True, S "dup"]) [B True, B True, B False]
     where ac = assertCode "assertStackDup"
 
 assertStackPop :: Assertion
 assertStackPop = do
-    ac [I 1, I 2, S "pop"]        [I 1]
-    ac [B False, B True, S "pop"] [B False]
+    ac (Q [I 1, I 2, S "pop"])        [I 1]
+    ac (Q [B False, B True, S "pop"]) [B False]
     where ac = assertCode "assertStackPop"
 
 assertStackSwap :: Assertion
 assertStackSwap = do
-    ac [I 1, I 2, S "swap"]        [I 1, I 2]
-    ac [B False, B True, S "swap"] [B False, B True]
+    ac (Q [I 1, I 2, S "swap"])        [I 1, I 2]
+    ac (Q [B False, B True, S "swap"]) [B False, B True]
     where ac = assertCode "assertStackSwap"
 
 assertStackCall :: Assertion
 assertStackCall = do
-    ac [I 1, I 2, Q [S "+"], S "call"]   [I 3]
-    ac [I 1, I 2, Q [S "pop"], S "call"] [I 1]
+    ac (Q [I 1, I 2, Q [S "+"], S "call"])   [I 3]
+    ac (Q [I 1, I 2, Q [S "pop"], S "call"]) [I 1]
     where ac = assertCode "assertStackCall"
 
 assertStackQuote :: Assertion
 assertStackQuote = do
-    ac [I 1, I 2, S "quote"]        [Q [I 2], I 1]
-    ac [B False, B True, S "quote"] [Q [B True], B False]
+    ac (Q [I 1, I 2, S "quote"])        [Q [I 2], I 1]
+    ac (Q [B False, B True, S "quote"]) [Q [B True], B False]
     where ac = assertCode "assertStackQuote"
 
 assertStackCompose :: Assertion
 assertStackCompose = do
-    ac [I 5, Q [S "+"], S "compose"]       [Q [I 5, S "+"]]
-    ac [Q [S "pop"], Q [S "+"], S "compose"] [Q [S "pop", S "+"]]
+    ac (Q [I 5, Q [S "+"], S "compose"])         [Q [I 5, S "+"]]
+    ac (Q [Q [S "pop"], Q [S "+"], S "compose"]) [Q [S "pop", S "+"]]
     where ac = assertCode "assertStackCompose"
 
 assertStackCurry :: Assertion
 assertStackCurry = do
-    ac [I 5, Q [S "+"], S "curry"]       [Q [I 5, S "+"]]
+    ac (Q [I 5, Q [S "+"], S "curry"])       [Q [I 5, S "+"]]
     where ac = assertCode "assertStackCurry"
 
 assertStackRot :: Assertion
 assertStackRot = do
-    ac [I 1, I 2, I 3, S "rot"]           [I 1, I 3, I 2]
-    ac [B False, B True, B True, S "rot"] [B False, B True, B True]
+    ac (Q [I 1, I 2, I 3, S "rot"])           [I 1, I 3, I 2]
+    ac (Q [B False, B True, B True, S "rot"]) [B False, B True, B True]
     where ac = assertCode "assertStackRot"
 
 assertStackBi :: Assertion
 assertStackBi = do
-    ac [I 2, Q [I 5, S "+"], Q [I 5, S "*"], S "bi"] [I 10, I 7]
-    ac [I 3, Q [I 6, S "+"], Q [I 7, S "*"], S "bi"] [I 21, I 9]
+    ac (Q [I 2, Q [I 5, S "+"], Q [I 5, S "*"], S "bi"]) [I 10, I 7]
+    ac (Q [I 3, Q [I 6, S "+"], Q [I 7, S "*"], S "bi"]) [I 21, I 9]
     where ac = assertCode "assertStackBi"
 
 assertIntPlus :: Assertion
 assertIntPlus = do
-    ac [I 1, I 2, S "+"]             [I 3]
-    ac [I 1, I 2, I 3, S "+", S "+"] [I 6]
+    ac (Q [I 1, I 2, S "+"])             [I 3]
+    ac (Q [I 1, I 2, I 3, S "+", S "+"]) [I 6]
     where ac = assertCode "assertIntPlus"
 
 assertIntStar :: Assertion
 assertIntStar = do
-    ac [I 2, I 3, S "*"]             [I 6]
-    ac [I 2, I 3, I 4, S "*", S "*"] [I 24]
+    ac (Q [I 2, I 3, S "*"])             [I 6]
+    ac (Q [I 2, I 3, I 4, S "*", S "*"]) [I 24]
     where ac = assertCode "assertIntStar"
 
 -- Tests.
