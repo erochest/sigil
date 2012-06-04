@@ -5,8 +5,13 @@ module Language.Sigil.Types
     , SWord(..)
     , Stack(..)
     , Code(..)
+    , StackTransformer
+    , SigilEnv(..)
+    , Sigil
+    , SigilOutput
     ) where
 
+import           Control.Monad.Trans.State
 import           Data.Monoid
 import qualified Data.Text as T
 
@@ -51,10 +56,19 @@ instance Monoid Stack where
     mempty = Stack []
     mappend (Stack a) (Stack b) = Stack (a `mappend` b)
 
+type StackTransformer = Stack -> Stack
+
 class Code a where
 
     -- This either generates a stack transformation function or it executes an
     -- instruction.
-    exec :: a -> Stack -> Stack
+    exec :: a -> StackTransformer
 
+data SigilEnv = SigilEnv
+    { envProgram :: Maybe SWord
+    } deriving (Show)
+
+type Sigil = StateT SigilEnv IO
+
+type SigilOutput = (Stack, SigilEnv)
 
