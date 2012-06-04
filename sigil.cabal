@@ -30,6 +30,7 @@ Library
   Exposed-modules:
       Language.Sigil
     , Language.Sigil.Exec
+    , Language.Sigil.Parser
     , Language.Sigil.Types
 
   Build-depends:
