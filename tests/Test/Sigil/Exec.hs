@@ -4,14 +4,10 @@ module Test.Sigil.Exec
     ( execTests
     ) where
 
-import           Data.Functor
-import           Data.Monoid
 import           Language.Sigil
 import           Test.HUnit (Assertion, assertBool)
 import           Test.Framework (Test, testGroup)
 import           Test.Framework.Providers.HUnit (testCase)
-import           Test.Framework.Providers.QuickCheck2 (testProperty)
-import           Test.QuickCheck
 import           Text.Printf
 
 --
