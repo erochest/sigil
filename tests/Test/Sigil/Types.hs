@@ -28,6 +28,7 @@ instance Arbitrary T.Text where
 instance Arbitrary SWord where
     arbitrary = frequency [ (1, B <$> arbitrary)
                           , (1, I <$> arbitrary)
+                          , (1, F <$> arbitrary)
                           , (1, S <$> arbitrary)
                           , (2, Q <$> resize 3 (listOf arbitrary))
                           ]
@@ -57,6 +58,9 @@ testShowB = do
 pShowI :: Int -> Bool
 pShowI i = show i == show (I i)
 
+pShowF :: Double -> Bool
+pShowF f = show f == show (F f)
+
 pShowS :: T.Text -> Bool
 pShowS s = T.unpack s == show (S s)
 
@@ -65,6 +69,7 @@ testShowQ = do
     ab $ show (Q []) == "[ ]"
     ab $ show (Q [I 4]) == "[ 4 ]"
     ab $ show (Q [I 5, S "+"]) == "[ 5 + ]"
+    ab $ show (Q [I 5, F 3.1415, S "+"]) == "[ 5 3.1415 + ]"
     ab $ show (Q [I 5, Q [S "+", I 13]]) == "[ 5 [ + 13 ] ]"
     where ab = assertBool "testShowQ"
 
@@ -84,6 +89,7 @@ typeTests =
                         , testProperty "word-mconcat" (pMConcat :: [SWord] -> Bool)
                         , testCase "show-b" testShowB
                         , testProperty "show-i" pShowI
+                        , testProperty "show-f" pShowF
                         , testProperty "show-s" pShowS
                         , testCase "show-q" testShowQ
                         , testProperty "word-eq" pWordEq

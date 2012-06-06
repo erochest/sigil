@@ -20,6 +20,7 @@ parseText = parseOnly word
 word :: Parser SWord
 word =   quote
      <|> bool
+     <|> float
      <|> int
      <|> symbol
 
@@ -35,6 +36,12 @@ quote = do
 bool :: Parser SWord
 bool =   (stringCI "#t" >> return (B True))
      <|> (stringCI "#f" >> return (B False))
+
+float :: Parser SWord
+float = F <$> (tof =<< number)
+    where
+        tof (P.D f) = return f
+        tof _       = fail "not a floating-point number"
 
 int :: Parser SWord
 int = I <$> (toi =<< number)

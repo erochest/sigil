@@ -39,17 +39,15 @@ assertLiteralBool = do
     where a :: Bool -> T.Text -> Assertion
           a = assertParse "assertLiteralBool" . B
 
-{-
- - assertLiteralFloat :: Assertion
- - assertLiteralFloat = do
- -     a 2.718281 "2.718281"
- -     a 3.141592 "3.141592"
- -     a 0.33     "0.33"
- -     a (-0.33)  "-0.33"
- -     where
- -         a :: Double -> T.Text -> Assertion
- -         a = assertParser "assertLiteralFloat" . F
- -}
+assertLiteralFloat :: Assertion
+assertLiteralFloat = do
+    a 2.718281 "2.718281"
+    a 3.141592 "3.141592"
+    a 0.33     "0.33"
+    a (-0.33)  "-0.33"
+    where
+        a :: Double -> T.Text -> Assertion
+        a = assertParse "assertLiteralFloat" . F
 
 assertLiteralInt :: Assertion
 assertLiteralInt = do
@@ -104,7 +102,7 @@ assertProgramEmpty = do
 assertProgramSingle :: Assertion
 assertProgramSingle = do
     a (Q [B True])        "[#t]"
-    -- a (Q [F 3.14])        "[3.14]"
+    a (Q [F 3.14])        "[3.14]"
     a (Q [I 42])          "[42]"
     a (Q [S "+"]) "[+]"
     where a = assertParse "assertProgramSingle"
@@ -112,7 +110,7 @@ assertProgramSingle = do
 assertProgramExtraWS :: Assertion
 assertProgramExtraWS = do
     a (Q [B True])        "[ #t ]"
-    -- a (Q [F 3.14])        "[ 3.14 ]"
+    a (Q [F 3.14])        "[ 3.14 ]"
     a (Q [I 42])          "[ 42 ]"
     a (Q [S "+"]) "[ + ]"
     where a = assertParse "assertProgramExtraWS"
@@ -121,15 +119,15 @@ assertProgramEmbedded :: Assertion
 assertProgramEmbedded = do
     a (Q [Q [B True]])         "[ [#t] ]"
     a (Q [Q [I 42  ]])         "[ [ 42 ] ]"
-    -- a (Q [Q [Q [F 3.141592]]]) "[[[3.141592]] ]"
+    a (Q [Q [Q [F 3.141592]]]) "[[[3.141592]] ]"
     where a = assertParse "assertProgramEmbedded"
 
 assertProgramMultiple :: Assertion
 assertProgramMultiple = do
-    -- a (Q [I 42, I 13, F 3.141592]) "( 42 13 3.141592 )"
     a (Q [I 42, I 13]) "[ 42 13 ]"
-    -- a (Q [I 42, Q [I 13, F 3.141592], S "+"]) "(42 (13 3.141592) +)"
+    a (Q [I 42, I 13, F 3.141592]) "[ 42 13 3.141592 ]"
     a (Q [I 42, Q [I 13], S "+"]) "[42 [13] +]"
+    a (Q [I 42, Q [I 13, F 3.141592], S "+"]) "[42 [13 3.141592] +]"
     a (Q [Q [S "a", S "b"], Q [S "d", S "e"], Q [S "f", S "g"]])
       "[ [a b] [ d e ] [f g] ]"
     where a = assertParse "assertProgramMultiple"
@@ -139,7 +137,7 @@ assertProgramMultiple = do
 parserTests :: [Test]
 parserTests =
     [ testGroup "literals"      [ testCase "boolean" assertLiteralBool
-                                -- , testCase "float" assertLiteralFloat
+                                , testCase "float" assertLiteralFloat
                                 , testCase "integer" assertLiteralInt
                                 ]
     , testGroup "instructions"  [ testCase "alpha" assertInstructionAlpha

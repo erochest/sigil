@@ -22,6 +22,7 @@ type Quote = [SWord]
 data SWord
     = B Bool
     | I Int
+    | F Double
     | S Symbol
     | Q Quote
     deriving (Eq)
@@ -40,6 +41,7 @@ instance Show SWord where
     showsPrec _ (B True) s  = "#t" ++ s
     showsPrec _ (B False) s = "#f" ++ s
     showsPrec _ (I i) s     = show i ++ s
+    showsPrec _ (F f) s     = show f ++ s
     showsPrec _ (S t) s     = T.unpack t ++ s
     showsPrec _ (Q qs) s    = showq shows qs
         where
