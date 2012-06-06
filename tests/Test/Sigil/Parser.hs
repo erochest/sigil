@@ -119,7 +119,7 @@ assertProgramExtraWS = do
 
 assertProgramEmbedded :: Assertion
 assertProgramEmbedded = do
-    a (Q [Q [B True]])         "[ [TRUE] ]"
+    a (Q [Q [B True]])         "[ [#t] ]"
     a (Q [Q [I 42  ]])         "[ [ 42 ] ]"
     -- a (Q [Q [Q [F 3.141592]]]) "[[[3.141592]] ]"
     where a = assertParse "assertProgramEmbedded"
@@ -129,7 +129,7 @@ assertProgramMultiple = do
     -- a (Q [I 42, I 13, F 3.141592]) "( 42 13 3.141592 )"
     a (Q [I 42, I 13]) "[ 42 13 ]"
     -- a (Q [I 42, Q [I 13, F 3.141592], S "+"]) "(42 (13 3.141592) +)"
-    a (Q [I 42, Q [I 13], S "+"]) "[42 [13 3.141592] +]"
+    a (Q [I 42, Q [I 13], S "+"]) "[42 [13] +]"
     a (Q [Q [S "a", S "b"], Q [S "d", S "e"], Q [S "f", S "g"]])
       "[ [a b] [ d e ] [f g] ]"
     where a = assertParse "assertProgramMultiple"
