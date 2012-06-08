@@ -20,8 +20,8 @@ parseText = parseOnly word
 
 word :: Parser SWord
 word =   quote
-     <|> bool
      <|> vector
+     <|> bool
      <|> float
      <|> int
      <|> symbol
@@ -40,20 +40,26 @@ bool =   (stringCI "#t" >> return (B True))
      <|> (stringCI "#f" >> return (B False))
 
 vector :: Parser SWord
-vector = vectorint
+vector =   vector' "#f<" tof VF
+       <|> vector' "#i<" toi VI
 
-vectorint :: Parser SWord
-vectorint = try $
-    (stringCI "#i<" >> skipSpace) *> vbody <* (skipSpace >> char '>')
+vector' :: (V.Unbox a)
+        => T.Text
+        -> (Number -> Parser a)
+        -> (V.Vector a -> SWord)
+        -> Parser SWord
+vector' prefix pnumber toWord = try $
+    (stringCI prefix >> skipSpace) *> vbody <* (skipSpace >> char '>')
     where
         vbody :: Parser SWord
-        vbody = VI . V.fromList <$> (toi =<< number) `sepBy` many1 space
+        vbody = toWord . V.fromList <$> (pnumber =<< number) `sepBy` many1 space
 
 float :: Parser SWord
 float = F <$> (tof =<< number)
-    where
-        tof (P.D f) = return f
-        tof _       = fail "not a floating-point number"
+
+tof :: Number -> Parser Double
+tof (P.D f) = return f
+tof _       = fail "not a floating-point number"
 
 int :: Parser SWord
 int = I <$> (toi =<< number)

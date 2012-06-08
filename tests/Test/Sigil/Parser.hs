@@ -70,6 +70,15 @@ assertLiteralVInt = do
     where a :: (V.Vector Int) -> T.Text -> Assertion
           a = assertParse "assertLiteralVInt" . VI
 
+assertLiteralVFloat :: Assertion
+assertLiteralVFloat = do
+    a V.empty                                "#f< >"
+    a (V.fromList [1.0])                     "#f< 1.0 >"
+    a (V.fromList [-1.0, 0.0, 1.0])          "#f< -1.0 0.0 1.0 >"
+    a (V.fromList [1.4142, 2.71828, 3.1415]) "#f< 1.4142 2.71828 3.1415 >"
+    where a :: (V.Vector Double) -> T.Text -> Assertion
+          a = assertParse "assertLiteralVFloat" . VF
+
 assertInstructionAlpha :: Assertion
 assertInstructionAlpha = do
     a "aaa" "aaa"
@@ -150,6 +159,7 @@ parserTests =
                                 , testCase "float" assertLiteralFloat
                                 , testCase "integer" assertLiteralInt
                                 , testCase "vector-int" assertLiteralVInt
+                                , testCase "vector-float" assertLiteralVFloat
                                 ]
     , testGroup "instructions"  [ testCase "alpha" assertInstructionAlpha
                                 , testCase "alphanum" assertInstructionAlphaNum
