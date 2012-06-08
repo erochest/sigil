@@ -8,6 +8,7 @@ import           Control.Applicative
 import qualified Data.Char as C
 import           Data.Monoid
 import qualified Data.Text as T
+import qualified Data.Vector.Unboxed as V
 import           Language.Sigil
 import           Test.HUnit (Assertion, assertBool)
 import           Test.Framework (Test, testGroup)
@@ -25,12 +26,16 @@ instance Arbitrary T.Text where
               isNameChar '.' = True
               isNameChar c   = C.isAlpha c
 
+instance (Arbitrary a, V.Unbox a) => Arbitrary (V.Vector a) where
+    arbitrary = V.fromList <$> arbitrary
+
 instance Arbitrary SWord where
-    arbitrary = frequency [ (1, B <$> arbitrary)
-                          , (1, I <$> arbitrary)
-                          , (1, F <$> arbitrary)
-                          , (1, S <$> arbitrary)
-                          , (2, Q <$> resize 3 (listOf arbitrary))
+    arbitrary = frequency [ (1, B  <$> arbitrary)
+                          , (1, I  <$> arbitrary)
+                          , (1, F  <$> arbitrary)
+                          , (1, S  <$> arbitrary)
+                          , (1, VI <$> arbitrary)
+                          , (2, Q  <$> resize 3 (listOf arbitrary))
                           ]
 
 instance Arbitrary Stack where
@@ -73,6 +78,13 @@ testShowQ = do
     ab $ show (Q [I 5, Q [S "+", I 13]]) == "[ 5 [ + 13 ] ]"
     where ab = assertBool "testShowQ"
 
+testShowVI :: Assertion
+testShowVI = do
+    avi $ show (VI $ V.fromList [])                     == "#i< >"
+    avi $ show (VI $ V.fromList [1, 2, 3])              == "#i< 1 2 3 >"
+    avi $ show (VI $ V.fromList [13, 42, 74, 100, 121]) == "#i< 13 42 74 100 121 >"
+    where avi = assertBool "testShowVI"
+
 pWordEq :: SWord -> Bool
 pWordEq a = a == a
 
@@ -92,6 +104,7 @@ typeTests =
                         , testProperty "show-f" pShowF
                         , testProperty "show-s" pShowS
                         , testCase "show-q" testShowQ
+                        , testCase "show-vi" testShowVI
                         , testProperty "word-eq" pWordEq
                         ]
     , testGroup "stack" [ testProperty "stack-mempty" (pMEmpty :: Stack -> Bool)

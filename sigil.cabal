@@ -38,6 +38,7 @@ Library
     , text         >= 0.11 && <0.12
     , transformers >= 0.3  && <0.4
     , attoparsec   >= 0.10 && <0.11
+    , vector       >= 0.9  && <0.10
 
   -- Other-modules:
 
@@ -66,6 +67,7 @@ Test-Suite test-sigil
     , test-framework-quickcheck2 >= 0.2
     , HUnit                      >= 1.2
     , QuickCheck                 >= 2.4
+    , vector                     >= 0.9  && <0.10
     , sigil
   ghc-options:    -Wall -rtsopts -fhpc
 

@@ -14,17 +14,19 @@ module Language.Sigil.Types
 import           Control.Monad.Trans.State
 import           Data.Monoid
 import qualified Data.Text as T
+import qualified Data.Vector.Unboxed as V
 
 type Symbol = T.Text
 
 type Quote = [SWord]
 
 data SWord
-    = B Bool
-    | I Int
-    | F Double
-    | S Symbol
-    | Q Quote
+    = B  Bool
+    | I  Int
+    | F  Double
+    | S  Symbol
+    | VI (V.Vector Int)
+    | Q  Quote
     deriving (Eq)
 
 instance Monoid SWord where
@@ -43,6 +45,7 @@ instance Show SWord where
     showsPrec _ (I i) s     = show i ++ s
     showsPrec _ (F f) s     = show f ++ s
     showsPrec _ (S t) s     = T.unpack t ++ s
+    showsPrec i (VI v) s    = showV 'i' i v s
     showsPrec _ (Q qs) s    = showq shows qs
         where
             showq _ []          = "[ ]" ++ s
@@ -50,6 +53,12 @@ instance Show SWord where
 
             showl _  []     = ' ' : ']' : s
             showl sh (r:rs) = ' ' : sh r (showl sh rs)
+
+showV :: (Show a, V.Unbox a) => Char -> Int -> V.Vector a -> ShowS
+showV prefix a v s = ('#':prefix:'<' : V.foldr accum (' ':'>' : s) v)
+    where
+        accum :: (Show a, V.Unbox a) => a -> String -> String
+        accum i s = (' ' : show i ++ s)
 
 data Stack = Stack [SWord]
     deriving (Show, Eq)
