@@ -80,10 +80,19 @@ testShowQ = do
 
 testShowVI :: Assertion
 testShowVI = do
-    avi $ show (VI $ V.fromList [])                     == "#i< >"
-    avi $ show (VI $ V.fromList [1, 2, 3])              == "#i< 1 2 3 >"
-    avi $ show (VI $ V.fromList [13, 42, 74, 100, 121]) == "#i< 13 42 74 100 121 >"
+    avi $ svi []                     == "#i< >"
+    avi $ svi [1, 2, 3]              == "#i< 1 2 3 >"
+    avi $ svi [13, 42, 74, 100, 121] == "#i< 13 42 74 100 121 >"
     where avi = assertBool "testShowVI"
+          svi = show . VI . V.fromList
+
+testShowVF :: Assertion
+testShowVF = do
+    avf $ svf []                        == "#f< >"
+    avf $ svf [-1.0, 0.0, 1.0]          == "#f< -1.0 0.0 1.0 >"
+    avf $ svf [1.4142, 2.71828, 3.1415] == "#f< 1.4142 2.71828 3.1415 >"
+    where avf = assertBool "testShowVF"
+          svf = show . VF . V.fromList
 
 pWordEq :: SWord -> Bool
 pWordEq a = a == a
@@ -105,6 +114,7 @@ typeTests =
                         , testProperty "show-s" pShowS
                         , testCase "show-q" testShowQ
                         , testCase "show-vi" testShowVI
+                        , testCase "show-vf" testShowVF
                         , testProperty "word-eq" pWordEq
                         ]
     , testGroup "stack" [ testProperty "stack-mempty" (pMEmpty :: Stack -> Bool)

@@ -26,6 +26,7 @@ data SWord
     | F  Double
     | S  Symbol
     | VI (V.Vector Int)
+    | VF (V.Vector Double)
     | Q  Quote
     deriving (Eq)
 
@@ -46,6 +47,7 @@ instance Show SWord where
     showsPrec _ (F f) s     = show f ++ s
     showsPrec _ (S t) s     = T.unpack t ++ s
     showsPrec i (VI v) s    = showV 'i' i v s
+    showsPrec i (VF v) s    = showV 'f' i v s
     showsPrec _ (Q qs) s    = showq shows qs
         where
             showq _ []          = "[ ]" ++ s
