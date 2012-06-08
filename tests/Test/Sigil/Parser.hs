@@ -5,6 +5,7 @@ module Test.Sigil.Parser
     ) where
 
 import qualified Data.Text as T
+import qualified Data.Vector.Unboxed as V
 import           Language.Sigil
 import           Test.HUnit (Assertion, assertBool)
 import           Test.Framework (Test, testGroup)
@@ -59,6 +60,15 @@ assertLiteralInt = do
     a 0    "-0"
     where a :: Int -> T.Text -> Assertion
           a = assertParse "assertLiteralInt" . I
+
+assertLiteralVInt :: Assertion
+assertLiteralVInt = do
+    a V.empty                             "#i< >"
+    a (V.fromList [1])                    "#i< 1 >"
+    a (V.fromList [1, 2, 3])              "#i< 1 2 3 >"
+    a (V.fromList [13, 42, 74, 100, 121]) "#i< 13 42 74 100 121 >"
+    where a :: (V.Vector Int) -> T.Text -> Assertion
+          a = assertParse "assertLiteralVInt" . VI
 
 assertInstructionAlpha :: Assertion
 assertInstructionAlpha = do
@@ -139,6 +149,7 @@ parserTests =
     [ testGroup "literals"      [ testCase "boolean" assertLiteralBool
                                 , testCase "float" assertLiteralFloat
                                 , testCase "integer" assertLiteralInt
+                                , testCase "vector-int" assertLiteralVInt
                                 ]
     , testGroup "instructions"  [ testCase "alpha" assertInstructionAlpha
                                 , testCase "alphanum" assertInstructionAlphaNum

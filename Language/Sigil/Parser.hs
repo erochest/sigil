@@ -10,6 +10,7 @@ import           Data.Attoparsec.Text hiding (I)
 import           Data.Char
 import           Data.Either
 import qualified Data.Text as T
+import qualified Data.Vector.Unboxed as V
 import           Language.Sigil.Types
 import           Prelude hiding (takeWhile)
 
@@ -20,6 +21,7 @@ parseText = parseOnly word
 word :: Parser SWord
 word =   quote
      <|> bool
+     <|> vector
      <|> float
      <|> int
      <|> symbol
@@ -37,6 +39,16 @@ bool :: Parser SWord
 bool =   (stringCI "#t" >> return (B True))
      <|> (stringCI "#f" >> return (B False))
 
+vector :: Parser SWord
+vector = vectorint
+
+vectorint :: Parser SWord
+vectorint = try $
+    (stringCI "#i<" >> skipSpace) *> vbody <* (skipSpace >> char '>')
+    where
+        vbody :: Parser SWord
+        vbody = VI . V.fromList <$> (toi =<< number) `sepBy` many1 space
+
 float :: Parser SWord
 float = F <$> (tof =<< number)
     where
@@ -45,9 +57,10 @@ float = F <$> (tof =<< number)
 
 int :: Parser SWord
 int = I <$> (toi =<< number)
-    where
-        toi (P.I i) = return $ fromIntegral i
-        toi _       = fail "not an integer"
+
+toi :: Number -> Parser Int
+toi (P.I i) = return $ fromIntegral i
+toi _       = fail "not an integer"
 
 symbol :: Parser SWord
 symbol = do
