@@ -79,6 +79,16 @@ assertLiteralVFloat = do
     where a :: (V.Vector Double) -> T.Text -> Assertion
           a = assertParse "assertLiteralVFloat" . VF
 
+assertLiteralVBool :: Assertion
+assertLiteralVBool = do
+    a V.empty "#b<>"
+    a (V.fromList [True]) "#b<1>"
+    a (V.fromList [False]) "#b<0>"
+    a (V.fromList [True, False]) "#b<10>"
+    a (V.fromList [False, False, True]) "#b<001>"
+    where a :: (V.Vector Bool) -> T.Text -> Assertion
+          a = assertParse "assertLiteralVBool" . VB
+
 assertInstructionAlpha :: Assertion
 assertInstructionAlpha = do
     a "aaa" "aaa"
@@ -160,6 +170,7 @@ parserTests =
                                 , testCase "integer" assertLiteralInt
                                 , testCase "vector-int" assertLiteralVInt
                                 , testCase "vector-float" assertLiteralVFloat
+                                , testCase "vector-bool" assertLiteralVBool
                                 ]
     , testGroup "instructions"  [ testCase "alpha" assertInstructionAlpha
                                 , testCase "alphanum" assertInstructionAlphaNum

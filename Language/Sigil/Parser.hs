@@ -42,6 +42,7 @@ bool =   (stringCI "#t" >> return (B True))
 vector :: Parser SWord
 vector =   vector' "#f<" tof VF
        <|> vector' "#i<" toi VI
+       <|> vectorbool
 
 vector' :: (V.Unbox a)
         => T.Text
@@ -53,6 +54,23 @@ vector' prefix pnumber toWord = try $
     where
         vbody :: Parser SWord
         vbody = toWord . V.fromList <$> (pnumber =<< number) `sepBy` many1 space
+
+vectorbool :: Parser SWord
+vectorbool = try $
+    (stringCI "#b<" >> skipSpace) *> vbody <* (skipSpace >> char '>')
+    where
+        vbody :: Parser SWord
+        vbody = VB . V.fromList <$> many (satisfy isBoolDigit >>= tob)
+
+tob :: Char -> Parser Bool
+tob '0' = return False
+tob ' ' = return False
+tob _   = return True
+
+isBoolDigit :: Char -> Bool
+isBoolDigit '0' = True
+isBoolDigit '1' = True
+isBoolDigit _   = False
 
 float :: Parser SWord
 float = F <$> (tof =<< number)
