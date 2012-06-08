@@ -94,6 +94,14 @@ testShowVF = do
     where avf = assertBool "testShowVF"
           svf = show . VF . V.fromList
 
+testShowVB :: Assertion
+testShowVB = do
+    avb (svb [])                               "#b<>"
+    avb (svb [True, False, True])              "#b<101>"
+    avb (svb [True, True, False, False, True]) "#b<11001>"
+    where avb i j = assertBool ("testShowVB: " ++ show i) $ i == j
+          svb = show . VB . V.fromList
+
 pWordEq :: SWord -> Bool
 pWordEq a = a == a
 
@@ -115,6 +123,7 @@ typeTests =
                         , testCase "show-q" testShowQ
                         , testCase "show-vi" testShowVI
                         , testCase "show-vf" testShowVF
+                        , testCase "show-vb" testShowVB
                         , testProperty "word-eq" pWordEq
                         ]
     , testGroup "stack" [ testProperty "stack-mempty" (pMEmpty :: Stack -> Bool)
