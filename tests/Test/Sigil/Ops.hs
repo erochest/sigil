@@ -38,8 +38,8 @@ assertNot = do
 
 assertIntPlus :: Assertion
 assertIntPlus = do
-    ac (Q [I 1, I 2, S "+"])             [I 3]
-    ac (Q [I 1, I 2, I 3, S "+", S "+"]) [I 6]
+    ac (Q [I 1, I 2, S "add_int"])                   [I 3]
+    ac (Q [I 1, I 2, I 3, S "add_int", S "add_int"]) [I 6]
     where ac = assertCode "assertIntPlus"
 
 assertIntStar :: Assertion
@@ -121,7 +121,7 @@ opsTests =
                                 ]
     , testGroup "double"        [
                                 ]
-    , testGroup "int"           [ testCase "+" assertIntPlus
+    , testGroup "int"           [ testCase "add_int" assertIntPlus
                                 , testCase "*" assertIntStar
                                 ]
     , testGroup "quote"         [

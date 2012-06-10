@@ -40,7 +40,6 @@ instance Code T.Text where
         return $ Stack (p1:p2:ss)
         where istack         = Stack [i]
 
-    exec "+" (Stack (I i1 : I i2 : ss)) = return $ Stack (I (i1 + i2) : ss)
     exec "*" (Stack (I i1 : I i2 : ss)) = return $ Stack (I (i1 * i2) : ss)
 
     exec _ s = return s

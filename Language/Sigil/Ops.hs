@@ -19,9 +19,8 @@ op "and" (Stack (B a:B b:ss)) = return $ Stack (B (a && b):ss)
 op "or"  (Stack (B a:B b:ss)) = return $ Stack (B (a || b):ss)
 op "not" (Stack (B a:ss))     = return $ Stack (B (not a) :ss)
 
--- Number operations
-
 -- Integer operations
+op "add_int" (Stack (I a:I b:ss)) = return $ Stack (I (a + b):ss)
 
 -- Double operations
 
