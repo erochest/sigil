@@ -36,11 +36,20 @@ assertNot = do
 
 -- Integer tests
 
-assertIntPlus :: Assertion
-assertIntPlus = do
+assertAddInt :: Assertion
+assertAddInt = do
     ac (Q [I 1, I 2, S "add_int"])                   [I 3]
     ac (Q [I 1, I 2, I 3, S "add_int", S "add_int"]) [I 6]
-    where ac = assertCode "assertIntPlus"
+    where ac = assertCode "assertAddInt"
+
+assertDec :: Assertion
+assertDec = do
+    ac [I 4, S "dec"]    [I 3]
+    ac [I 42, S "dec"]   [I 41]
+    ac [I 1, S "dec"]    [I 0]
+    ac [I 0, S "dec"]    [I (-1)]
+    ac [I (-1), S "dec"] [I (-2)]
+    where ac = assertCode "assertDec" . Q
 
 assertIntStar :: Assertion
 assertIntStar = do
@@ -128,7 +137,8 @@ opsTests =
                                 ]
     , testGroup "double"        [
                                 ]
-    , testGroup "int"           [ testCase "add_int" assertIntPlus
+    , testGroup "int"           [ testCase "add_int" assertAddInt
+                                , testCase "dec"     assertDec
                                 , testCase "*" assertIntStar
                                 ]
     , testGroup "quote"         [ testCase "apply"   assertApply
