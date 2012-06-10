@@ -11,6 +11,7 @@ import           Control.Monad
 import           Control.Monad.Trans.State
 import           Data.Monoid
 import qualified Data.Text as T
+import           Language.Sigil.Ops
 import           Language.Sigil.Types
 
 instance Code a => Code [a] where
@@ -21,6 +22,9 @@ instance Code SWord where
     exec x     (Stack xs) = return $ Stack (x:xs)
 
 instance Code T.Text where
+    exec = op
+
+    {-
     exec "dip"     (Stack ((Q q) : i : ss))      = mappend (Stack [i]) `fmap` exec q (Stack ss)
     exec "dup"     (Stack (s:ss))                = return $ Stack (s:s:ss)
     exec "pop"     (Stack (_:ss))                = return $ Stack ss
@@ -40,6 +44,7 @@ instance Code T.Text where
     exec "*" (Stack (I i1 : I i2 : ss)) = return $ Stack (I (i1 * i2) : ss)
 
     exec _ s = return s
+    -}
 
 defaultEnv :: SigilEnv
 defaultEnv = SigilEnv Nothing
