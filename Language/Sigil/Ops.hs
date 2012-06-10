@@ -15,6 +15,9 @@ op :: T.Text -> StackTransformer
 -- Stack operations
 
 -- Boolean operations
+op "and" (Stack (B a:B b:ss)) = return $ Stack (B (a && b):ss)
+op "or"  (Stack (B a:B b:ss)) = return $ Stack (B (a || b):ss)
+op "not" (Stack (B a:ss))     = return $ Stack (B (not a) :ss)
 
 -- Number operations
 
