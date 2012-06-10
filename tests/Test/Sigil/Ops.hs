@@ -11,6 +11,29 @@ import Test.Framework.Providers.HUnit (testCase)
 import Test.Utils
 import Text.Printf
 
+-- Boolean tests
+assertAnd :: Assertion
+assertAnd = do
+    ac [B True,  B True,  S "and"] [B True]
+    ac [B True,  B False, S "and"] [B False]
+    ac [B False, B True,  S "and"] [B False]
+    ac [B False, B False, S "and"] [B False]
+    where ac = assertCode "assertAnd" . Q
+
+assertOr :: Assertion
+assertOr = do
+    ac [B True,  B True,  S "or"] [B True]
+    ac [B True,  B False, S "or"] [B True]
+    ac [B False, B True,  S "or"] [B True]
+    ac [B False, B False, S "or"] [B False]
+    where ac = assertCode "assertOr" . Q
+
+assertNot :: Assertion
+assertNot = do
+    ac [B True,  S "not"] [B False]
+    ac [B False, S "not"] [B True]
+    where ac = assertCode "assertNot" . Q
+
 -- Integer tests
 
 assertIntPlus :: Assertion
@@ -90,7 +113,9 @@ assertStackBi = do
 
 opsTests :: [Test]
 opsTests =
-    [ testGroup "bool"          [
+    [ testGroup "bool"          [ testCase "and" assertAnd
+                                , testCase "or"  assertOr
+                                , testCase "not" assertNot
                                 ]
     , testGroup "number"        [
                                 ]
