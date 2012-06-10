@@ -35,6 +35,8 @@ instance Arbitrary SWord where
                           , (1, F  <$> arbitrary)
                           , (1, S  <$> arbitrary)
                           , (1, VI <$> arbitrary)
+                          , (1, VF <$> arbitrary)
+                          , (1, VB <$> arbitrary)
                           , (2, Q  <$> resize 3 (listOf arbitrary))
                           ]
 

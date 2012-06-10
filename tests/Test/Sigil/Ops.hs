@@ -62,6 +62,11 @@ assertCompose = do
     ac (Q [Q [S "pop"], Q [S "add_int"], S "compose"]) [Q [S "pop", S "add_int"]]
     where ac = assertCode "assertCompose"
 
+assertCons :: Assertion
+assertCons = do
+    ac [Q [I 2, I 3], I 1, S "cons"] [Q [I 1, I 2, I 3]]
+    where ac = assertCode "assertCons" . Q
+
 -- Stack
 
 assertStackDip :: Assertion
@@ -128,6 +133,7 @@ opsTests =
                                 ]
     , testGroup "quote"         [ testCase "apply"   assertApply
                                 , testCase "compose" assertCompose
+                                , testCase "cons" assertCons
                                 ]
     , testGroup "stack"         [ testCase "dip"     assertStackDip
                                 , testCase "dup"     assertStackDup

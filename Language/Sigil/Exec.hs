@@ -83,7 +83,8 @@ op "add_int" (Stack (I a:I b:ss)) = return $ Stack (I (a + b):ss)
 -- Vector operations
 
 -- Quote operations
-op "apply" (Stack (Q q:ss)) = q `exec` Stack ss
+op "apply" (Stack (Q q:ss))   = q `exec` Stack ss
+op "cons"  (Stack (a:Q q:ss)) = return $ Stack (Q (a:q):ss)
 
 -- Finally, a no-op.
 op _ s = return s
