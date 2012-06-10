@@ -11,7 +11,6 @@ import           Control.Monad
 import           Control.Monad.Trans.State
 import           Data.Monoid
 import qualified Data.Text as T
-import           Language.Sigil.Ops
 import           Language.Sigil.Types
 
 instance Code a => Code [a] where
@@ -63,4 +62,29 @@ runSigilCode env word =
         run' :: SWord -> Stack -> Sigil Stack
         run' (Q q) stack = exec q stack
         run' code  stack = exec code stack
+
+op :: T.Text -> StackTransformer
+
+-- Stack operations
+op "pop" (Stack (_:ss)) = return $ Stack ss
+
+-- Boolean operations
+op "and" (Stack (B a:B b:ss)) = return $ Stack (B (a && b):ss)
+op "or"  (Stack (B a:B b:ss)) = return $ Stack (B (a || b):ss)
+op "not" (Stack (B a:ss))     = return $ Stack (B (not a) :ss)
+
+-- Integer operations
+op "add_int" (Stack (I a:I b:ss)) = return $ Stack (I (a + b):ss)
+
+-- Double operations
+
+-- Symbol operations
+
+-- Vector operations
+
+-- Quote operations
+op "apply" (Stack (Q q:ss)) = q `exec` Stack ss
+
+-- Finally, a no-op.
+op _ s = return s
 
