@@ -30,7 +30,6 @@ instance Code T.Text where
     exec "swap"    (Stack (x:y:ss))              = return $ Stack (y:x:ss)
     exec "call"    (Stack ((Q q):ss))            = q `exec` Stack ss
     exec "quote"   (Stack (s:ss))                = return $ Stack (Q [s] : ss)
-    exec "compose" (Stack (s2:s1:ss))            = return $ Stack (s1 `mappend` s2 : ss)
     exec "curry"   (Stack (Q q:i:ss))            = return $ Stack (Q (i:q) : ss)
     exec "rot"     (Stack (a:b:c:ss))            = return $ Stack (c:a:b:ss)
     exec "bi"      (Stack (Q q1: Q q2 : i : ss)) = do
@@ -66,7 +65,8 @@ runSigilCode env word =
 op :: T.Text -> StackTransformer
 
 -- Stack operations
-op "pop" (Stack (_:ss)) = return $ Stack ss
+op "pop"     (Stack (_:ss))   = return $ Stack ss
+op "compose" (Stack (a:b:ss)) = return $ Stack (b `mappend` a:ss)
 
 -- Boolean operations
 op "and" (Stack (B a:B b:ss)) = return $ Stack (B (a && b):ss)

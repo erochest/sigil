@@ -56,6 +56,12 @@ assertApply = do
     ac (Q [I 1, I 2, Q [S "pop"], S "apply"]) [I 1]
     where ac = assertCode "assertApply"
 
+assertCompose :: Assertion
+assertCompose = do
+    ac (Q [I 5, Q [S "add_int"], S "compose"])         [Q [I 5, S "add_int"]]
+    ac (Q [Q [S "pop"], Q [S "add_int"], S "compose"]) [Q [S "pop", S "add_int"]]
+    where ac = assertCode "assertCompose"
+
 -- Stack
 
 assertStackDip :: Assertion
@@ -87,12 +93,6 @@ assertStackQuote = do
     ac (Q [I 1, I 2, S "quote"])        [Q [I 2], I 1]
     ac (Q [B False, B True, S "quote"]) [Q [B True], B False]
     where ac = assertCode "assertStackQuote"
-
-assertStackCompose :: Assertion
-assertStackCompose = do
-    ac (Q [I 5, Q [S "add_int"], S "compose"])         [Q [I 5, S "add_int"]]
-    ac (Q [Q [S "pop"], Q [S "add_int"], S "compose"]) [Q [S "pop", S "add_int"]]
-    where ac = assertCode "assertStackCompose"
 
 assertStackCurry :: Assertion
 assertStackCurry = do
@@ -127,13 +127,13 @@ opsTests =
                                 , testCase "*" assertIntStar
                                 ]
     , testGroup "quote"         [ testCase "apply"   assertApply
+                                , testCase "compose" assertCompose
                                 ]
     , testGroup "stack"         [ testCase "dip"     assertStackDip
                                 , testCase "dup"     assertStackDup
                                 , testCase "pop"     assertStackPop
                                 , testCase "swap"    assertStackSwap
                                 , testCase "quote"   assertStackQuote
-                                , testCase "compose" assertStackCompose
                                 , testCase "curry"   assertStackCurry
                                 , testCase "rot"     assertStackRot
                                 , testCase "bi"      assertStackBi
