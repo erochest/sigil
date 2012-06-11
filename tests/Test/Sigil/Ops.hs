@@ -51,6 +51,13 @@ assertDec = do
     ac [I (-1), S "dec"] [I (-2)]
     where ac = assertCode "assertDec" . Q
 
+assertDivInt :: Assertion
+assertDivInt = do
+    ac [I 2, I 4, S "div_int"] [I 2]
+    ac [I 1, I 4, S "div_int"] [I 4]
+    ac [I 4, I 1, S "div_int"] [I 0]
+    where ac = assertCode "assertDivInt" . Q
+
 assertIntStar :: Assertion
 assertIntStar = do
     ac (Q [I 2, I 3, S "*"])             [I 6]
@@ -139,6 +146,7 @@ opsTests =
                                 ]
     , testGroup "int"           [ testCase "add_int" assertAddInt
                                 , testCase "dec"     assertDec
+                                , testCase "div_int" assertDivInt
                                 , testCase "*" assertIntStar
                                 ]
     , testGroup "quote"         [ testCase "apply"   assertApply

@@ -76,6 +76,7 @@ op "not" (Stack (B a:ss))     = return $ Stack (B (not a) :ss)
 -- Integer operations
 op "add_int" (Stack (I a:I b:ss)) = return $ Stack (I (a + b):ss)
 op "dec"     (Stack (I a:ss))     = return $ Stack (I (a - 1):ss)
+op "div_int" (Stack (I a:I b:ss)) = return $ Stack (I (a `div` b):ss)
 
 -- Double operations
 
