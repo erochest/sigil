@@ -24,7 +24,6 @@ instance Code T.Text where
     exec = op
 
     {-
-    exec "dip"     (Stack ((Q q) : i : ss))      = mappend (Stack [i]) `fmap` exec q (Stack ss)
     exec "dup"     (Stack (s:ss))                = return $ Stack (s:s:ss)
     exec "pop"     (Stack (_:ss))                = return $ Stack ss
     exec "swap"    (Stack (x:y:ss))              = return $ Stack (y:x:ss)
@@ -65,8 +64,9 @@ runSigilCode env word =
 op :: T.Text -> StackTransformer
 
 -- Stack operations
-op "pop"     (Stack (_:ss))   = return $ Stack ss
-op "compose" (Stack (a:b:ss)) = return $ Stack (b `mappend` a:ss)
+op "pop"     (Stack (_:ss))       = return $ Stack ss
+op "compose" (Stack (a:b:ss))     = return $ Stack (b `mappend` a:ss)
+op "dip"     (Stack ((Q q):i:ss)) = mappend (Stack [i]) `fmap` exec q (Stack ss)
 
 -- Boolean operations
 op "and" (Stack (B a:B b:ss)) = return $ Stack (B (a && b):ss)

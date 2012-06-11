@@ -78,11 +78,11 @@ assertCons = do
 
 -- Stack
 
-assertStackDip :: Assertion
-assertStackDip = do
+assertDip :: Assertion
+assertDip = do
     ac (Q [I 1, I 2, I 3, Q [S "add_int"], S "dip"])   [I 3, I 3]
     ac (Q [I 1, I 2, I 3, Q [S "pop"], S "dip"]) [I 3, I 1]
-    where ac = assertCode "assertStackDip"
+    where ac = assertCode "assertDip"
 
 assertStackDup :: Assertion
 assertStackDup = do
@@ -145,7 +145,7 @@ opsTests =
                                 , testCase "compose" assertCompose
                                 , testCase "cons" assertCons
                                 ]
-    , testGroup "stack"         [ testCase "dip"     assertStackDip
+    , testGroup "stack"         [ testCase "dip"     assertDip
                                 , testCase "dup"     assertStackDup
                                 , testCase "pop"     assertStackPop
                                 , testCase "swap"    assertStackSwap
