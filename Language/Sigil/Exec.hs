@@ -24,7 +24,6 @@ instance Code T.Text where
     exec = op
 
     {-
-    exec "dup"     (Stack (s:ss))                = return $ Stack (s:s:ss)
     exec "pop"     (Stack (_:ss))                = return $ Stack ss
     exec "swap"    (Stack (x:y:ss))              = return $ Stack (y:x:ss)
     exec "call"    (Stack ((Q q):ss))            = q `exec` Stack ss
@@ -67,6 +66,7 @@ op :: T.Text -> StackTransformer
 op "pop"     (Stack (_:ss))       = return $ Stack ss
 op "compose" (Stack (a:b:ss))     = return $ Stack (b `mappend` a:ss)
 op "dip"     (Stack ((Q q):i:ss)) = mappend (Stack [i]) `fmap` exec q (Stack ss)
+op "dup"     (Stack (s:ss))       = return $ Stack (s:s:ss)
 
 -- Boolean operations
 op "and" (Stack (B a:B b:ss)) = return $ Stack (B (a && b):ss)

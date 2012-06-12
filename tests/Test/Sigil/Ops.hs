@@ -91,11 +91,11 @@ assertDip = do
     ac (Q [I 1, I 2, I 3, Q [S "pop"], S "dip"]) [I 3, I 1]
     where ac = assertCode "assertDip"
 
-assertStackDup :: Assertion
-assertStackDup = do
+assertDup :: Assertion
+assertDup = do
     ac (Q [I 1, I 2, I 3, S "dup"])   [I 3, I 3, I 2, I 1]
     ac (Q [B False, B True, S "dup"]) [B True, B True, B False]
-    where ac = assertCode "assertStackDup"
+    where ac = assertCode "assertDup"
 
 assertStackPop :: Assertion
 assertStackPop = do
@@ -154,7 +154,7 @@ opsTests =
                                 , testCase "cons" assertCons
                                 ]
     , testGroup "stack"         [ testCase "dip"     assertDip
-                                , testCase "dup"     assertStackDup
+                                , testCase "dup"     assertDup
                                 , testCase "pop"     assertStackPop
                                 , testCase "swap"    assertStackSwap
                                 , testCase "quote"   assertStackQuote
