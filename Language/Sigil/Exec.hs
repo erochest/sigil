@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.Sigil.Exec
@@ -61,6 +62,9 @@ runSigilCode env word =
         run' code  stack = exec code stack
 
 op :: T.Text -> StackTransformer
+
+-- Generic operations
+op "eq" (Stack (a:b:ss)) = return $ Stack (B (a == b):ss)
 
 -- Stack operations
 op "pop"     (Stack (_:ss))       = return $ Stack ss

@@ -4,12 +4,24 @@ module Test.Sigil.Ops
     ( opsTests
     ) where
 
-import Language.Sigil
-import Test.HUnit (Assertion, assertBool)
-import Test.Framework (Test, testGroup)
-import Test.Framework.Providers.HUnit (testCase)
-import Test.Utils
-import Text.Printf
+import           Language.Sigil
+import           Test.HUnit (Assertion)
+import           Test.Framework (Test, testGroup)
+import           Test.Framework.Providers.HUnit (testCase)
+import           Test.Utils
+
+-- Generic tests
+assertEq :: Assertion
+assertEq = do
+    ac [B True,     B True,      S "eq"] [B True]
+    ac [B True,     B False,     S "eq"] [B False]
+    ac [I 42,       I 42,        S "eq"] [B True]
+    ac [I 42,       I 13,        S "eq"] [B False]
+    ac [F 3.141,    F 3.141,     S "eq"] [B True]
+    ac [F 3.141,    F 1.0,       S "eq"] [B False]
+    ac [Q [S "hi"], Q [S "hi"],  S "eq"] [B True]
+    ac [Q [S "hi"], Q [S "bye"], S "eq"] [B False]
+    where ac = assertCode "assertEq" . Q
 
 -- Boolean tests
 assertAnd :: Assertion
@@ -136,7 +148,9 @@ assertStackBi = do
 
 opsTests :: [Test]
 opsTests =
-    [ testGroup "bool"          [ testCase "and" assertAnd
+    [ testGroup "generic"       [ testCase "eq" assertEq
+                                ]
+    , testGroup "bool"          [ testCase "and" assertAnd
                                 , testCase "or"  assertOr
                                 , testCase "not" assertNot
                                 ]
