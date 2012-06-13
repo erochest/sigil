@@ -37,6 +37,12 @@ assertFalse = do
     ac [S "false"] [B False]
     where ac = assertCode "assertFalse" . Q
 
+assertIf :: Assertion
+assertIf = do
+    ac [S "false", Q [I 13], Q [I 42], S "if"] [I 42]
+    ac [B True,    Q [I 13], Q [I 42], S "if"] [I 13]
+    where ac = assertCode "assertIf" . Q
+
 assertOr :: Assertion
 assertOr = do
     ac [B True,  B True,  S "or"] [B True]
@@ -164,6 +170,7 @@ opsTests =
                                 ]
     , testGroup "bool"          [ testCase "and"   assertAnd
                                 , testCase "false" assertFalse
+                                , testCase "if"    assertIf
                                 , testCase "or"    assertOr
                                 , testCase "not"   assertNot
                                 ]

@@ -73,10 +73,12 @@ op "dip"     (Stack ((Q q):i:ss)) = mappend (Stack [i]) `fmap` exec q (Stack ss)
 op "dup"     (Stack (s:ss))       = return $ Stack (s:s:ss)
 
 -- Boolean operations
-op "and"   (Stack (B a:B b:ss)) = return $ Stack (B (a && b):ss)
-op "false" (Stack ss)           = return $ Stack (B False:ss)
-op "or"    (Stack (B a:B b:ss)) = return $ Stack (B (a || b):ss)
-op "not"   (Stack (B a:ss))     = return $ Stack (B (not a) :ss)
+op "and"   (Stack (B a:B b:ss))         = return $ Stack (B (a && b):ss)
+op "false" (Stack ss)                   = return $ Stack (B False:ss)
+op "if"    (Stack (Q _:Q t:B True: ss)) = exec t $ Stack ss
+op "if"    (Stack (Q e:Q _:B False:ss)) = exec e $ Stack ss
+op "or"    (Stack (B a:B b:ss))         = return $ Stack (B (a || b):ss)
+op "not"   (Stack (B a:ss))             = return $ Stack (B (not a) :ss)
 
 -- Integer operations
 op "add_int" (Stack (I a:I b:ss)) = return $ Stack (I (a + b):ss)
