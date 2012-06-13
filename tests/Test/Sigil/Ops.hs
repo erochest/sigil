@@ -95,6 +95,13 @@ assertCons = do
     ac [Q [I 2, I 3], I 1, S "cons"] [Q [I 1, I 2, I 3]]
     where ac = assertCode "assertCons" . Q
 
+assertEmpty :: Assertion
+assertEmpty = do
+    ac [Q [], S "empty"]            [B True]
+    ac [Q [I 1], S "empty"]         [B False]
+    ac [Q [I 5, S "+"], S "empty"]  [B False]
+    where ac = assertCode "assertEmpty" . Q
+
 -- Stack
 
 assertDip :: Assertion
@@ -165,7 +172,8 @@ opsTests =
                                 ]
     , testGroup "quote"         [ testCase "apply"   assertApply
                                 , testCase "compose" assertCompose
-                                , testCase "cons" assertCons
+                                , testCase "cons"    assertCons
+                                , testCase "empty"   assertEmpty
                                 ]
     , testGroup "stack"         [ testCase "dip"     assertDip
                                 , testCase "dup"     assertDup

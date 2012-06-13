@@ -91,6 +91,8 @@ op "div_int" (Stack (I a:I b:ss)) = return $ Stack (I (a `div` b):ss)
 -- Quote operations
 op "apply" (Stack (Q q:ss))   = q `exec` Stack ss
 op "cons"  (Stack (a:Q q:ss)) = return $ Stack (Q (a:q):ss)
+op "empty" (Stack (Q []:ss))  = return $ Stack (B True: ss)
+op "empty" (Stack (Q _ :ss))  = return $ Stack (B False:ss)
 
 -- Finally, a no-op.
 op _ s = return s
