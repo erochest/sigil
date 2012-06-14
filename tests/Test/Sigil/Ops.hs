@@ -111,12 +111,6 @@ assertMulInt = do
     ac [I 5,    I 4, S "mul_int"] [I 20]
     where ac = assertCode "assertMulInt" . Q
 
-assertIntStar :: Assertion
-assertIntStar = do
-    ac (Q [I 2, I 3, S "*"])             [I 6]
-    ac (Q [I 2, I 3, I 4, S "*", S "*"]) [I 24]
-    where ac = assertCode "assertIntStar"
-
 -- Quote
 
 assertApply :: Assertion
@@ -164,6 +158,11 @@ assertDup = do
     ac (Q [B False, B True, S "dup"]) [B True, B True, B False]
     where ac = assertCode "assertDup"
 
+assertPApply :: Assertion
+assertPApply = do
+    ac [I 5, Q [S "add_int"], S "papply"] [Q [I 5, S "add_int"]]
+    where ac = assertCode "assertPApply" . Q
+
 assertStackPop :: Assertion
 assertStackPop = do
     ac (Q [I 1, I 2, S "pop"])        [I 1]
@@ -181,11 +180,6 @@ assertStackQuote = do
     ac (Q [I 1, I 2, S "quote"])        [Q [I 2], I 1]
     ac (Q [B False, B True, S "quote"]) [Q [B True], B False]
     where ac = assertCode "assertStackQuote"
-
-assertStackCurry :: Assertion
-assertStackCurry = do
-    ac (Q [I 5, Q [S "add_int"], S "curry"])       [Q [I 5, S "add_int"]]
-    where ac = assertCode "assertStackCurry"
 
 assertStackRot :: Assertion
 assertStackRot = do
@@ -230,10 +224,11 @@ opsTests =
                                 ]
     , testGroup "stack"         [ testCase "dip"     assertDip
                                 , testCase "dup"     assertDup
+                                , testCase "papply"  assertPApply
+
                                 , testCase "pop"     assertStackPop
                                 , testCase "swap"    assertStackSwap
                                 , testCase "quote"   assertStackQuote
-                                , testCase "curry"   assertStackCurry
                                 , testCase "rot"     assertStackRot
                                 , testCase "bi"      assertStackBi
                                 ]

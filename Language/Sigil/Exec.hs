@@ -29,7 +29,6 @@ instance Code T.Text where
     exec "swap"    (Stack (x:y:ss))              = return $ Stack (y:x:ss)
     exec "call"    (Stack ((Q q):ss))            = q `exec` Stack ss
     exec "quote"   (Stack (s:ss))                = return $ Stack (Q [s] : ss)
-    exec "curry"   (Stack (Q q:i:ss))            = return $ Stack (Q (i:q) : ss)
     exec "rot"     (Stack (a:b:c:ss))            = return $ Stack (c:a:b:ss)
     exec "bi"      (Stack (Q q1: Q q2 : i : ss)) = do
         Stack (p1:_) <- q1 `exec` istack
@@ -71,6 +70,7 @@ op "pop"     (Stack (_:ss))       = return $ Stack ss
 op "compose" (Stack (a:b:ss))     = return $ Stack (b `mappend` a:ss)
 op "dip"     (Stack ((Q q):i:ss)) = mappend (Stack [i]) `fmap` exec q (Stack ss)
 op "dup"     (Stack (s:ss))       = return $ Stack (s:s:ss)
+op "papply"  (Stack (Q q:s:ss))   = return $ Stack (Q (s:q):ss)
 
 -- Boolean operations
 op "and"   (Stack (B a:B b:ss))         = return $ Stack (B (a && b):ss)
