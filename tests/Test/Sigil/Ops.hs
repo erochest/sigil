@@ -123,6 +123,13 @@ assertEmpty = do
     ac [Q [I 5, S "+"], S "empty"]  [B False]
     where ac = assertCode "assertEmpty" . Q
 
+assertList :: Assertion
+assertList = do
+    ac [I 42,                  S "list"] [Q [I 42]]
+    ac [S "false",             S "list"] [Q [B False]]
+    ac [I 1, I 2, S "add_int", S "list"] [Q [I 3]]
+    where ac = assertCode "assertList" . Q
+
 -- Stack
 
 assertDip :: Assertion
@@ -198,6 +205,7 @@ opsTests =
                                 , testCase "compose" assertCompose
                                 , testCase "cons"    assertCons
                                 , testCase "empty"   assertEmpty
+                                , testCase "list"    assertList
                                 ]
     , testGroup "stack"         [ testCase "dip"     assertDip
                                 , testCase "dup"     assertDup
