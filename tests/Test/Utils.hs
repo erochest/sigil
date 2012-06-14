@@ -7,7 +7,7 @@ module Test.Utils
 import           Control.Applicative
 import qualified Data.Char as C
 import qualified Data.Text as T
-import qualified Data.Vector.Unboxed as V
+-- import qualified Data.Vector.Unboxed as V
 import           Language.Sigil
 import           Test.HUnit (Assertion, assertBool)
 import           Test.QuickCheck
@@ -29,17 +29,19 @@ instance Arbitrary T.Text where
               isNameChar '.' = True
               isNameChar c   = C.isAlpha c
 
-instance (Arbitrary a, V.Unbox a) => Arbitrary (V.Vector a) where
-    arbitrary = V.fromList <$> arbitrary
+{-
+ - instance (Arbitrary a, V.Unbox a) => Arbitrary (V.Vector a) where
+ -     arbitrary = V.fromList <$> arbitrary
+ -}
 
 instance Arbitrary SWord where
     arbitrary = frequency [ (1, B  <$> arbitrary)
                           , (1, I  <$> arbitrary)
-                          , (1, F  <$> arbitrary)
+                          -- , (1, F  <$> arbitrary)
                           , (1, S  <$> arbitrary)
-                          , (1, VI <$> arbitrary)
-                          , (1, VF <$> arbitrary)
-                          , (1, VB <$> arbitrary)
+                          -- , (1, VI <$> arbitrary)
+                          -- , (1, VF <$> arbitrary)
+                          -- , (1, VB <$> arbitrary)
                           , (2, Q  <$> resize 3 (listOf arbitrary))
                           ]
 

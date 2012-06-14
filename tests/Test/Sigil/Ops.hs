@@ -17,8 +17,8 @@ assertEq = do
     ac [B True,     B False,     S "eq"] [B False]
     ac [I 42,       I 42,        S "eq"] [B True]
     ac [I 42,       I 13,        S "eq"] [B False]
-    ac [F 3.141,    F 3.141,     S "eq"] [B True]
-    ac [F 3.141,    F 1.0,       S "eq"] [B False]
+    -- ac [F 3.141,    F 3.141,     S "eq"] [B True]
+    -- ac [F 3.141,    F 1.0,       S "eq"] [B False]
     ac [Q [S "hi"], Q [S "hi"],  S "eq"] [B True]
     ac [Q [S "hi"], Q [S "bye"], S "eq"] [B False]
     where ac = assertCode "assertEq" . Q
@@ -205,17 +205,19 @@ assertSwap = do
     ac (Q [B False, B True, S "swap"]) [B False, B True]
     where ac = assertCode "assertSwap"
 
-assertStackRot :: Assertion
-assertStackRot = do
-    ac (Q [I 1, I 2, I 3, S "rot"])           [I 1, I 3, I 2]
-    ac (Q [B False, B True, B True, S "rot"]) [B False, B True, B True]
-    where ac = assertCode "assertStackRot"
-
-assertStackBi :: Assertion
-assertStackBi = do
-    ac (Q [I 2, Q [I 5, S "add_int"], Q [I 5, S "*"], S "bi"]) [I 10, I 7]
-    ac (Q [I 3, Q [I 6, S "add_int"], Q [I 7, S "*"], S "bi"]) [I 21, I 9]
-    where ac = assertCode "assertStackBi"
+{-
+ - assertStackRot :: Assertion
+ - assertStackRot = do
+ -     ac (Q [I 1, I 2, I 3, S "rot"])           [I 1, I 3, I 2]
+ -     ac (Q [B False, B True, B True, S "rot"]) [B False, B True, B True]
+ -     where ac = assertCode "assertStackRot"
+ - 
+ - assertStackBi :: Assertion
+ - assertStackBi = do
+ -     ac (Q [I 2, Q [I 5, S "add_int"], Q [I 5, S "*"], S "bi"]) [I 10, I 7]
+ -     ac (Q [I 3, Q [I 6, S "add_int"], Q [I 7, S "*"], S "bi"]) [I 21, I 9]
+ -     where ac = assertCode "assertStackBi"
+ -}
 
 --
 
@@ -230,10 +232,12 @@ opsTests =
                                 , testCase "not"   assertNot
                                 , testCase "true"  assertTrue
                                 ]
-    , testGroup "number"        [
-                                ]
-    , testGroup "double"        [
-                                ]
+    {-
+     - , testGroup "number"        [
+     -                             ]
+     - , testGroup "double"        [
+     -                             ]
+     -}
     , testGroup "int"           [ testCase "add_int" assertAddInt
                                 , testCase "dec"     assertDec
                                 , testCase "div_int" assertDivInt
@@ -255,19 +259,20 @@ opsTests =
                                 , testCase "papply"  assertPApply
                                 , testCase "pop"     assertPop
                                 , testCase "swap"    assertSwap
-
-                                , testCase "rot"     assertStackRot
-                                , testCase "bi"      assertStackBi
+                                -- , testCase "rot"     assertStackRot
+                                -- , testCase "bi"      assertStackBi
                                 ]
-    , testGroup "symbol"        [
-                                ]
-    , testGroup "vector bool"   [
-                                ]
-    , testGroup "vector int"    [
-                                ]
-    , testGroup "vector double" [
-                                ]
-    , testGroup "noop"          [
-                                ]
+    {-
+     - , testGroup "symbol"        [
+     -                             ]
+     - , testGroup "vector bool"   [
+     -                             ]
+     - , testGroup "vector int"    [
+     -                             ]
+     - , testGroup "vector double" [
+     -                             ]
+     - , testGroup "noop"          [
+     -                             ]
+     -}
     ]
 
