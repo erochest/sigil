@@ -163,11 +163,11 @@ assertPApply = do
     ac [I 5, Q [S "add_int"], S "papply"] [Q [I 5, S "add_int"]]
     where ac = assertCode "assertPApply" . Q
 
-assertStackPop :: Assertion
-assertStackPop = do
+assertPop :: Assertion
+assertPop = do
     ac (Q [I 1, I 2, S "pop"])        [I 1]
     ac (Q [B False, B True, S "pop"]) [B False]
-    where ac = assertCode "assertStackPop"
+    where ac = assertCode "assertPop"
 
 assertStackSwap :: Assertion
 assertStackSwap = do
@@ -225,8 +225,8 @@ opsTests =
     , testGroup "stack"         [ testCase "dip"     assertDip
                                 , testCase "dup"     assertDup
                                 , testCase "papply"  assertPApply
+                                , testCase "pop"     assertPop
 
-                                , testCase "pop"     assertStackPop
                                 , testCase "swap"    assertStackSwap
                                 , testCase "quote"   assertStackQuote
                                 , testCase "rot"     assertStackRot

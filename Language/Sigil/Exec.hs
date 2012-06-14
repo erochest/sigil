@@ -66,11 +66,11 @@ op :: T.Text -> StackTransformer
 op "eq" (Stack (a:b:ss)) = return $ Stack (B (a == b):ss)
 
 -- Stack operations
-op "pop"     (Stack (_:ss))       = return $ Stack ss
 op "compose" (Stack (a:b:ss))     = return $ Stack (b `mappend` a:ss)
 op "dip"     (Stack ((Q q):i:ss)) = mappend (Stack [i]) `fmap` exec q (Stack ss)
 op "dup"     (Stack (s:ss))       = return $ Stack (s:s:ss)
 op "papply"  (Stack (Q q:s:ss))   = return $ Stack (Q (s:q):ss)
+op "pop"     (Stack (_:ss))       = return $ Stack ss
 
 -- Boolean operations
 op "and"   (Stack (B a:B b:ss))         = return $ Stack (B (a && b):ss)
