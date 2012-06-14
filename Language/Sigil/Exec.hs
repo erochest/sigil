@@ -25,19 +25,12 @@ instance Code T.Text where
     exec = op
 
     {-
-    exec "pop"     (Stack (_:ss))                = return $ Stack ss
-    exec "swap"    (Stack (x:y:ss))              = return $ Stack (y:x:ss)
-    exec "call"    (Stack ((Q q):ss))            = q `exec` Stack ss
     exec "rot"     (Stack (a:b:c:ss))            = return $ Stack (c:a:b:ss)
     exec "bi"      (Stack (Q q1: Q q2 : i : ss)) = do
         Stack (p1:_) <- q1 `exec` istack
         Stack (p2:_) <- q2 `exec` istack
         return $ Stack (p1:p2:ss)
         where istack         = Stack [i]
-
-    exec "*" (Stack (I i1 : I i2 : ss)) = return $ Stack (I (i1 * i2) : ss)
-
-    exec _ s = return s
     -}
 
 defaultEnv :: SigilEnv
@@ -70,6 +63,7 @@ op "dip"     (Stack ((Q q):i:ss)) = mappend (Stack [i]) `fmap` exec q (Stack ss)
 op "dup"     (Stack (s:ss))       = return $ Stack (s:s:ss)
 op "papply"  (Stack (Q q:s:ss))   = return $ Stack (Q (s:q):ss)
 op "pop"     (Stack (_:ss))       = return $ Stack ss
+op "swap"    (Stack (a:b:ss))     = return $ Stack (b:a:ss)
 
 -- Boolean operations
 op "and"   (Stack (B a:B b:ss))         = return $ Stack (B (a && b):ss)

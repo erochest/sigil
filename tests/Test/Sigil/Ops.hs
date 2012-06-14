@@ -187,11 +187,11 @@ assertPop = do
     ac (Q [B False, B True, S "pop"]) [B False]
     where ac = assertCode "assertPop"
 
-assertStackSwap :: Assertion
-assertStackSwap = do
-    ac (Q [I 1, I 2, S "swap"])        [I 1, I 2]
+assertSwap :: Assertion
+assertSwap = do
+    ac (Q [I 1, I 2,        S "swap"]) [I 1, I 2]
     ac (Q [B False, B True, S "swap"]) [B False, B True]
-    where ac = assertCode "assertStackSwap"
+    where ac = assertCode "assertSwap"
 
 assertStackRot :: Assertion
 assertStackRot = do
@@ -240,8 +240,8 @@ opsTests =
                                 , testCase "dup"     assertDup
                                 , testCase "papply"  assertPApply
                                 , testCase "pop"     assertPop
+                                , testCase "swap"    assertSwap
 
-                                , testCase "swap"    assertStackSwap
                                 , testCase "rot"     assertStackRot
                                 , testCase "bi"      assertStackBi
                                 ]
