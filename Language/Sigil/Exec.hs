@@ -86,6 +86,7 @@ op "div_int" (Stack (I a:I b:ss)) = return $ Stack (I (a `div` b):ss)
 op "inc"     (Stack (I i:ss))     = return $ Stack (I (i + 1):ss)
 op "mod_int" (Stack (I a:I b:ss)) = return $ Stack (I (a `mod` b):ss)
 op "mul_int" (Stack (I a:I b:ss)) = return $ Stack (I (a * b):ss)
+op "sub_int" (Stack (I a:I b:ss)) = return $ Stack (I (b - a):ss)
 
 -- Double operations
 
