@@ -57,6 +57,11 @@ assertNot = do
     ac [B False, S "not"] [B True]
     where ac = assertCode "assertNot" . Q
 
+assertTrue :: Assertion
+assertTrue = do
+    ac [S "true"] [B True]
+    where ac = assertCode "assertTrue" . Q
+
 -- Integer tests
 
 assertAddInt :: Assertion
@@ -216,6 +221,7 @@ opsTests =
                                 , testCase "if"    assertIf
                                 , testCase "or"    assertOr
                                 , testCase "not"   assertNot
+                                , testCase "true"  assertTrue
                                 ]
     , testGroup "number"        [
                                 ]
