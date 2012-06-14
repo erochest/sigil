@@ -28,7 +28,6 @@ instance Code T.Text where
     exec "pop"     (Stack (_:ss))                = return $ Stack ss
     exec "swap"    (Stack (x:y:ss))              = return $ Stack (y:x:ss)
     exec "call"    (Stack ((Q q):ss))            = q `exec` Stack ss
-    exec "quote"   (Stack (s:ss))                = return $ Stack (Q [s] : ss)
     exec "rot"     (Stack (a:b:c:ss))            = return $ Stack (c:a:b:ss)
     exec "bi"      (Stack (Q q1: Q q2 : i : ss)) = do
         Stack (p1:_) <- q1 `exec` istack
@@ -100,6 +99,7 @@ op "cons"  (Stack (a:Q q:ss)) = return $ Stack (Q (a:q):ss)
 op "empty" (Stack (Q []:ss))  = return $ Stack (B True: ss)
 op "empty" (Stack (Q _ :ss))  = return $ Stack (B False:ss)
 op "list"  (Stack (s:ss))     = return $ Stack (Q [s]:ss)
+op "quote" (Stack (s:ss))     = return $ Stack (Q [s]:ss)
 
 -- Finally, a no-op.
 op _ s = return s

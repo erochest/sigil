@@ -144,6 +144,13 @@ assertList = do
     ac [I 1, I 2, S "add_int", S "list"] [Q [I 3]]
     where ac = assertCode "assertList" . Q
 
+assertQuote :: Assertion
+assertQuote = do
+    ac [I 42,                  S "quote"] [Q [I 42]]
+    ac [S "false",             S "quote"] [Q [B False]]
+    ac [I 1, I 2, S "add_int", S "quote"] [Q [I 3]]
+    where ac = assertCode "assertQuote" . Q
+
 -- Stack
 
 assertDip :: Assertion
@@ -174,12 +181,6 @@ assertStackSwap = do
     ac (Q [I 1, I 2, S "swap"])        [I 1, I 2]
     ac (Q [B False, B True, S "swap"]) [B False, B True]
     where ac = assertCode "assertStackSwap"
-
-assertStackQuote :: Assertion
-assertStackQuote = do
-    ac (Q [I 1, I 2, S "quote"])        [Q [I 2], I 1]
-    ac (Q [B False, B True, S "quote"]) [Q [B True], B False]
-    where ac = assertCode "assertStackQuote"
 
 assertStackRot :: Assertion
 assertStackRot = do
@@ -221,6 +222,7 @@ opsTests =
                                 , testCase "cons"    assertCons
                                 , testCase "empty"   assertEmpty
                                 , testCase "list"    assertList
+                                , testCase "quote"   assertQuote
                                 ]
     , testGroup "stack"         [ testCase "dip"     assertDip
                                 , testCase "dup"     assertDup
@@ -228,7 +230,6 @@ opsTests =
                                 , testCase "pop"     assertPop
 
                                 , testCase "swap"    assertStackSwap
-                                , testCase "quote"   assertStackQuote
                                 , testCase "rot"     assertStackRot
                                 , testCase "bi"      assertStackBi
                                 ]
