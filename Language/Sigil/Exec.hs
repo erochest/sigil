@@ -90,12 +90,13 @@ op "sub_int" (Stack (I a:I b:ss)) = return $ Stack (I (b - a):ss)
 -- Vector operations
 
 -- Quote operations
-op "apply" (Stack (Q q:ss))   = q `exec` Stack ss
-op "cons"  (Stack (a:Q q:ss)) = return $ Stack (Q (a:q):ss)
-op "empty" (Stack (Q []:ss))  = return $ Stack (B True: ss)
-op "empty" (Stack (Q _ :ss))  = return $ Stack (B False:ss)
-op "list"  (Stack (s:ss))     = return $ Stack (Q [s]:ss)
-op "quote" (Stack (s:ss))     = return $ Stack (Q [s]:ss)
+op "apply"  (Stack (Q q:ss))      = q `exec` Stack ss
+op "cons"   (Stack (a:Q q:ss))    = return $ Stack (Q (a:q):ss)
+op "empty"  (Stack (Q []:ss))     = return $ Stack (B True: ss)
+op "empty"  (Stack (Q _ :ss))     = return $ Stack (B False:ss)
+op "list"   (Stack (s:ss))        = return $ Stack (Q [s]:ss)
+op "quote"  (Stack (s:ss))        = return $ Stack (Q [s]:ss)
+op "uncons" (Stack (Q (q:qs):ss)) = return $ Stack (q:Q qs:ss)
 
 -- Finally, a no-op.
 op _ s = return s

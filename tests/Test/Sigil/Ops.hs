@@ -167,6 +167,13 @@ assertQuote = do
     ac [I 1, I 2, S "add_int", S "quote"] [Q [I 3]]
     where ac = assertCode "assertQuote" . Q
 
+assertUncons :: Assertion
+assertUncons = do
+    ac [Q [I 1, I 2, I 3], S "uncons"] [I 1, Q [I 2, I 3]]
+    ac [Q [I 1],           S "uncons"] [I 1, Q []]
+    ac [Q [],              S "uncons"] [Q []]
+    where ac = assertCode "assertUncons" . Q
+
 -- Stack
 
 assertDip :: Assertion
@@ -241,6 +248,7 @@ opsTests =
                                 , testCase "empty"   assertEmpty
                                 , testCase "list"    assertList
                                 , testCase "quote"   assertQuote
+                                , testCase "uncons"  assertUncons
                                 ]
     , testGroup "stack"         [ testCase "dip"     assertDip
                                 , testCase "dup"     assertDup
