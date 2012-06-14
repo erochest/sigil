@@ -91,6 +91,15 @@ assertInc = do
     ac [I 15,   S "inc"] [I 16]
     where ac = assertCode "assertInc" . Q
 
+assertModInt :: Assertion
+assertModInt = do
+    ac [I 1, I 4, S "mod_int"] [I 0]
+    ac [I 2, I 4, S "mod_int"] [I 0]
+    ac [I 3, I 4, S "mod_int"] [I 1]
+    ac [I 4, I 4, S "mod_int"] [I 0]
+    ac [I 5, I 4, S "mod_int"] [I 4]
+    where ac = assertCode "assertModInt" . Q
+
 assertIntStar :: Assertion
 assertIntStar = do
     ac (Q [I 2, I 3, S "*"])             [I 6]
@@ -199,6 +208,7 @@ opsTests =
                                 , testCase "dec"     assertDec
                                 , testCase "div_int" assertDivInt
                                 , testCase "inc"     assertInc
+                                , testCase "mod_int" assertModInt
                                 , testCase "*" assertIntStar
                                 ]
     , testGroup "quote"         [ testCase "apply"   assertApply
