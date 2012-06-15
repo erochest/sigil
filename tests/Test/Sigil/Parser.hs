@@ -95,35 +95,74 @@ assertLiteralInt = do
 
 assertInstructionAlpha :: Assertion
 assertInstructionAlpha = do
-    a "aaa" "aaa"
-    a "bbb" "BBB"
-    a "ccc" "CcC"
-    a "abcdefghijklmnopqrstuvwxyz" "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    a "aaa"                         "aaa"
+    a "BBB"                         "BBB"
+    a "CcC"                         "CcC"
+    a "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     where
         a :: T.Text -> T.Text -> Assertion
         a = assertParse "assertInstructionAlpha" . S
 
 assertInstructionAlphaNum :: Assertion
 assertInstructionAlphaNum = do
-    a "a888" "A888"
-    a "g9h0i1" "G9h0I1"
+    a "A888"    "A888"
+    a "G9h0I1"  "G9h0I1"
     where
         a :: T.Text -> T.Text -> Assertion
         a = assertParse "assertInstructionAlphaNum" . S
 
+assertInstructionUnderscore :: Assertion
+assertInstructionUnderscore = do
+    a "_"    "_"
+    a "h_1"  "h_1"
+    where a = assertParse "assertInstructionUnderscore" . S
+
 assertInstructionSymbol :: Assertion
 assertInstructionSymbol = do
-    a "+" "+"
-    a "*" "*"
-    a "%" "%"
-    a "-" "-"
-    a "/" "/"
-    a "<" "<"
-    a "=" "="
-    a ">" ">"
+    mapM_ (\input -> a input input) [ "-"
+                                    , "`"
+                                    , "!"
+                                    , "@"
+                                    , "#"
+                                    , "$"
+                                    , "+"
+                                    , "*"
+                                    , "%"
+                                    , "/"
+                                    , "<"
+                                    , "="
+                                    , ">"
+                                    ]
     where
         a :: T.Text -> T.Text -> Assertion
         a = assertParse "assertInstructionSymbol" . S
+
+assertInstructionParens :: Assertion
+assertInstructionParens = do
+    as "("                   "("
+    as "()"                  "()"
+    as ")"                   ")"
+    as ","                   ","
+    aq [S "(", S ")"]        "[ ( ) ]"
+    aq [S "()"]              "[ () ]"
+    aq [S "(", S ",", S ")"] "[ ( , ) ]"
+    aq [S "(,)"]             "[ (,) ]"
+    where as = assertParse "assertInstructionParens" . S
+          aq = assertParse "assertInstructionParens" . Q
+
+assertInstructionMisc :: Assertion
+assertInstructionMisc = do
+    mapM_ (\input -> a input input) [ "thisisaverylongname"
+                                    , "q"
+                                    , "n42"
+                                    , "is-big?"
+                                    , "++"
+                                    , "<html>"
+                                    , "("
+                                    , "=^,,^="
+                                    ]
+    where a = assertParse "assertInstructionMisc" . S
+
 
 assertProgramEmpty :: Assertion
 assertProgramEmpty = do
@@ -176,9 +215,12 @@ parserTests =
                                 -- , testCase "vector-float" assertLiteralVFloat
                                 -- , testCase "vector-bool" assertLiteralVBool
                                 ]
-    , testGroup "instructions"  [ testCase "alpha" assertInstructionAlpha
-                                , testCase "alphanum" assertInstructionAlphaNum
-                                , testCase "symbol" assertInstructionSymbol
+    , testGroup "instructions"  [ testCase "alpha"      assertInstructionAlpha
+                                , testCase "alphanum"   assertInstructionAlphaNum
+                                , testCase "underscore" assertInstructionUnderscore
+                                , testCase "symbol"     assertInstructionSymbol
+                                , testCase "parens"     assertInstructionParens
+                                , testCase "misc"       assertInstructionMisc
                                 ]
     , testGroup "programs"      [ testCase "empty" assertProgramEmpty
                                 , testCase "single" assertProgramSingle

@@ -94,7 +94,7 @@ symbol :: Parser SWord
 symbol = do
     c  <- satisfy $ \c -> isSymbolChar c && not (isDigit c)
     cs <- takeWhile isSymbolChar
-    return . S . T.toLower $ T.cons c cs
+    return . S $ T.cons c cs
     where
         isSymbolChar '[' = False
         isSymbolChar ']' = False

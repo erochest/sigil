@@ -69,7 +69,7 @@ Test-Suite test-sigil
     , QuickCheck                 >= 2.4
     , vector                     >= 0.9  && <0.10
     , sigil
-  ghc-options:    -Wall -rtsopts -fhpc
+  ghc-options:    -Wall -rtsopts -threaded -fhpc 
 
 Source-Repository head
   type:     git
