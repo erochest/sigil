@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
@@ -12,6 +13,7 @@ module Language.Sigil.Exec
 
 import           Control.Monad
 import           Control.Monad.Trans.State
+import qualified Data.List as L
 import qualified Data.Map as M
 import           Data.Monoid
 import qualified Data.Text as T
@@ -54,14 +56,15 @@ runSigilCode env prog@(Program {..}) =
                    , envDefines = defines
                    })
     where
-        defines = processDefines progDefines `M.union` envDefines env
+        !defines = processDefines progDefines `M.union` envDefines env
 
         exec' [(Q q)] = exec q
         exec' w       = exec w
 
 -- | This reads the defines from a program and populates a DefMap.
 processDefines :: [Define] -> DefMap
-processDefines = undefined
+processDefines = L.foldl' accum mempty
+    where accum dm (Define name quote) = M.insert name quote dm
 
 op :: T.Text -> StackTransformer
 
