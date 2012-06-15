@@ -51,7 +51,7 @@ assertExecQuote = do
 
 assertExecSucc :: Assertion
 assertExecSucc = do
-    ad [I 3] "\ndefine succ\n{ 1 + }\n\n2 succ\n"
+    ad [I 3] "\ndefine succ\n{ 1 add_int }\n\n2 succ\n"
     where ad = assertText "assertExecSucc"
 
 -- Tests.

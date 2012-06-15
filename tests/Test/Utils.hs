@@ -26,7 +26,7 @@ assertCode msg word expected = do
 assertText :: String -> Quote -> T.Text -> Assertion
 assertText msg expected input = do
     case parseText input of
-        Left err   -> fail $ printf "%s: invalid input: '%s'" msg input'
+        Left err   -> fail $ printf "%s: %s: '%s'" msg err input'
         Right prog -> do
             actual <- fst `fmap` runSigilCode defaultEnv prog
             let msg' = printf "%s: '%s' => %s" msg input' $ show actual

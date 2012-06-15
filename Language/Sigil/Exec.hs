@@ -112,6 +112,10 @@ op "list"   (Stack (s:ss))        = return $ Stack (Q [s]:ss)
 op "quote"  (Stack (s:ss))        = return $ Stack (Q [s]:ss)
 op "uncons" (Stack (Q (q:qs):ss)) = return $ Stack (q:Q qs:ss)
 
--- Finally, a no-op.
-op _ s = return s
+-- Finally, either check for and execute a define or a no-op.
+op n s = do
+    ds <- gets envDefines
+    case M.lookup n ds of
+        Just q  -> q `exec` s
+        Nothing -> return s
 
