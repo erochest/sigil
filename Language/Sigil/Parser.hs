@@ -107,10 +107,12 @@ symbol = S <$> symbol'
 symbol' :: Parser Symbol
 symbol' = T.cons <$> satisfy isInitialChar <*> takeWhile isSymbolChar
 
+isInitialChar :: Char -> Bool
 isInitialChar c | isDigit c      = False
                 | isSymbolChar c = True
                 | otherwise      = False
 
+isSymbolChar :: Char -> Bool
 isSymbolChar '[' = False
 isSymbolChar ']' = False
 isSymbolChar '{' = False
