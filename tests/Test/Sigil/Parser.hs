@@ -23,11 +23,19 @@ import           Text.Printf
  -}
 
 assertParse :: String -> SWord -> T.Text -> Assertion
-assertParse msg expected input =
-    assertBool msg' $ (Right expected) == actual
-    where msg'   = printf "%s %s => %s /= %s"
-                          msg (show input) (show expected) (show actual)
-          actual = parseText input
+assertParse msg expected input = assertBool msg' $ expected' == actual
+    where msg'      = printf "%s %s => %s /= %s"
+                             msg (show input) (show expected) (show actual)
+          expected' = Right (Program [] [expected])
+          actual    = parseText input
+
+assertDefine :: String -> Symbol -> Quote -> T.Text -> Assertion
+assertDefine msg name define input = assertBool msg' $ expected' == actual
+    where msg'      = printf "%s %s =>   define %s -> %s /= %s"
+                             msg (show input) (show name) (show define)
+                             (show actual)
+          expected' = Right (Program [Define name define] [])
+          actual    = parseText input
 
 -- Tests
 
@@ -204,6 +212,11 @@ assertProgramMultiple = do
       "[ [a b] [ d e ] [f g] ]"
     where a = assertParse "assertProgramMultiple"
 
+assertDefineSucc :: Assertion
+assertDefineSucc = do
+    ad "succ" [I 1, S "+"] "define succ\n{ 1 + }\n"
+    where ad = assertDefine "assertDefineSucc"
+
 --
 
 parserTests :: [Test]
@@ -227,6 +240,8 @@ parserTests =
                                 , testCase "extra-ws" assertProgramExtraWS
                                 , testCase "embedded" assertProgramEmbedded
                                 , testCase "multiple" assertProgramMultiple
+                                ]
+    , testGroup "defines"       [ testCase "succ" assertDefineSucc
                                 ]
     ]
 

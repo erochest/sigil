@@ -49,13 +49,20 @@ assertExecQuote = do
     where ac = assertCode "assertExecQuote"
           al = assertCode "assertExecQuote"
 
+assertExecSucc :: Assertion
+assertExecSucc = do
+    ad [I 3] "\ndefine succ\n{ 1 + }\n\n2 succ\n"
+    where ad = assertText "assertExecSucc"
+
 -- Tests.
 execTests :: [Test]
 execTests =
-    [ testGroup "types"  [ testCase "exec-bool"   assertExecBool
-                         , testCase "exec-int"    assertExecInt
-                         , testCase "exec-symbol" assertExecSymbol
-                         , testCase "exec-quote"  assertExecQuote
-                         ]
+    [ testGroup "types"     [ testCase "exec-bool"   assertExecBool
+                            , testCase "exec-int"    assertExecInt
+                            , testCase "exec-symbol" assertExecSymbol
+                            , testCase "exec-quote"  assertExecQuote
+                            ]
+    , testGroup "defines"   [ testCase "succ" assertExecSucc
+                            ]
     ]
 

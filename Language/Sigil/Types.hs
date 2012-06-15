@@ -3,6 +3,9 @@ module Language.Sigil.Types
     ( Symbol
     , Quote
     , SWord(..)
+    , Define(..)
+    , DefMap
+    , SigilProgram(..)
     , Stack(..)
     , Code(..)
     , StackTransformer
@@ -12,6 +15,7 @@ module Language.Sigil.Types
     ) where
 
 import           Control.Monad.Trans.State
+import qualified Data.Map as M
 import           Data.Monoid
 import qualified Data.Text as T
 -- import qualified Data.Vector.Unboxed as V
@@ -73,6 +77,21 @@ instance Show SWord where
  -         accum False s = ('0' : s)
  -}
 
+data Define = Define Symbol Quote
+    deriving (Eq, Show)
+
+type DefMap = M.Map Symbol Quote
+
+data SigilProgram = Program { progDefines :: [Define]
+                            , progCode    :: Quote
+                            }
+    deriving (Eq, Show)
+
+instance Monoid SigilProgram where
+    mempty        = Program mempty mempty
+    mappend p1 p2 = Program (progDefines p1 `mappend` progDefines p2)
+                            (progCode p1    `mappend` progCode p2)
+
 data Stack = Stack [SWord]
     deriving (Show, Eq)
 
@@ -89,7 +108,8 @@ class Code a where
     exec :: a -> StackTransformer
 
 data SigilEnv = SigilEnv
-    { envProgram :: Maybe SWord
+    { envProgram :: Maybe SigilProgram
+    , envDefines :: DefMap
     } deriving (Show)
 
 type Sigil = StateT SigilEnv IO

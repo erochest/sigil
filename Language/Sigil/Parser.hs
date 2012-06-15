@@ -12,11 +12,28 @@ import           Data.Either
 import qualified Data.Text as T
 -- import qualified Data.Vector.Unboxed as V
 import           Language.Sigil.Types
-import           Prelude hiding (takeWhile)
+import           Prelude hiding (takeWhile, words)
 
 
-parseText :: T.Text -> Either String SWord
-parseText = parseOnly word
+parseText :: T.Text -> Either String SigilProgram
+parseText = parseOnly program
+
+program :: Parser SigilProgram
+program = Program <$> defines <*> (skipSpace *> words <* skipSpace)
+
+defines :: Parser [Define]
+defines = many define
+
+define :: Parser Define
+define = try $  Define
+             <$> ((skipSpace >> stringCI "define" >> takeWhile1 isSpace) *> symbol' <* skipSpace)
+             <*> words' '{' '}' <* skipSpace
+
+words :: Parser [SWord]
+words = word `sepBy` takeWhile1 isSpace
+
+words' :: Char -> Char -> Parser [SWord]
+words' a z = (char a >> skipSpace) *> words <* (skipSpace >> char z)
 
 word :: Parser SWord
 word =   quote
@@ -27,13 +44,7 @@ word =   quote
      <|> symbol
 
 quote :: Parser SWord
-quote = do
-    _ <- char '['
-    skipSpace
-    qs <- word `sepBy` (takeWhile1 isSpace)
-    skipSpace
-    _ <- char ']'
-    return $ Q qs
+quote = Q <$> words' '[' ']'
 
 bool :: Parser SWord
 bool =   (stringCI "#t" >> return (B True))
@@ -91,12 +102,18 @@ toi (P.I i) = return $ fromIntegral i
 toi _       = fail "not an integer"
 
 symbol :: Parser SWord
-symbol = do
-    c  <- satisfy $ \c -> isSymbolChar c && not (isDigit c)
-    cs <- takeWhile isSymbolChar
-    return . S $ T.cons c cs
-    where
-        isSymbolChar '[' = False
-        isSymbolChar ']' = False
-        isSymbolChar c   = not $ isSpace c
+symbol = S <$> symbol'
+
+symbol' :: Parser Symbol
+symbol' = T.cons <$> satisfy isInitialChar <*> takeWhile isSymbolChar
+
+isInitialChar c | isDigit c      = False
+                | isSymbolChar c = True
+                | otherwise      = False
+
+isSymbolChar '[' = False
+isSymbolChar ']' = False
+isSymbolChar '{' = False
+isSymbolChar '}' = False
+isSymbolChar c   = not $ isSpace c
 

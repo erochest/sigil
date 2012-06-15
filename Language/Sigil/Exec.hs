@@ -1,15 +1,18 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Language.Sigil.Exec
     ( runSigil
     , runSigilEnv
     , runSigilCode
+    , processDefines
     , defaultEnv
     ) where
 
 import           Control.Monad
 import           Control.Monad.Trans.State
+import qualified Data.Map as M
 import           Data.Monoid
 import qualified Data.Text as T
 import           Language.Sigil.Types
@@ -34,7 +37,7 @@ instance Code T.Text where
     -}
 
 defaultEnv :: SigilEnv
-defaultEnv = SigilEnv Nothing
+defaultEnv = SigilEnv Nothing mempty
 
 -- | This executes a random program against the default environment.
 runSigil :: IO SigilOutput
@@ -44,13 +47,21 @@ runSigil = runSigilCode defaultEnv mempty
 runSigilEnv :: SigilEnv -> IO SigilOutput
 runSigilEnv env = runSigilCode env mempty
 
-runSigilCode :: SigilEnv -> SWord -> IO SigilOutput
-runSigilCode env word =
-    runStateT (run' word mempty) $ env { envProgram = Just word }
+runSigilCode :: SigilEnv -> SigilProgram -> IO SigilOutput
+runSigilCode env prog@(Program {..}) =
+    runStateT (exec' progCode mempty)
+              (env { envProgram = Just prog
+                   , envDefines = defines
+                   })
     where
-        run' :: SWord -> Stack -> Sigil Stack
-        run' (Q q) stack = exec q stack
-        run' code  stack = exec code stack
+        defines = processDefines progDefines `M.union` envDefines env
+
+        exec' [(Q q)] = exec q
+        exec' w       = exec w
+
+-- | This reads the defines from a program and populates a DefMap.
+processDefines :: [Define] -> DefMap
+processDefines = undefined
 
 op :: T.Text -> StackTransformer
 
