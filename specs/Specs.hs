@@ -20,7 +20,12 @@ shouldNotBe a b = shouldSatisfy a (/= b)
 
 specs :: Spec
 specs = do
-    let base = (() :. 4) :: (() :. Int)
+    let base  = (() :. 4) :: (() :. Int)
+        base2 = base :. (5 :: Int)
+        base5 = base2 :. (6 :: Int)
+                      :. (7 :: Int)
+                      :. (8 :: Int)
+
     describe "stack type" $ do
         it "should take unit as base." $
             base `shouldBe` (() :. 4)
@@ -42,6 +47,12 @@ specs = do
             it "should remove something from the top of the stack." $ do
                 pop (base :. (2 :: Int)) `shouldBe` base
                 pop base `shouldBe` ()
+        describe "rotr" $
+            it "should rotate the top 3 items right." $
+                rotr base5 `shouldBe` (base2 :. 8 :. 6 :. 7)
+        describe "rotl" $
+            it "shold rotate the top 3 items left." $
+                rotl base5 `shouldBe` (base2 :. 7 :. 8 :. 6)
 
 tests :: TestTree
 tests = testGroup "sigil"

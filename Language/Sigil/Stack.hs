@@ -5,6 +5,8 @@ module Language.Sigil.Stack
     ( swap
     , push
     , pop
+    , rotr
+    , rotl
     ) where
 
 
@@ -19,4 +21,10 @@ push a s = s :. a
 
 pop :: (s :. a) -> s
 pop (s :. _) = s
+
+rotr :: (s :. a :. b :. c) -> (s :. c :. a :. b)
+rotr (s :. a :. b :. c) = s :. c :. a :. b
+
+rotl :: (s :. a :. b :. c) -> (s :. b :. c :. a)
+rotl (s :. a :. b :. c) = s :. b :. c :. a
 
