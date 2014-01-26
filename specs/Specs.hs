@@ -47,11 +47,17 @@ specs = do
             it "should remove something from the top of the stack." $ do
                 pop (base :. (2 :: Int)) `shouldBe` base
                 pop base `shouldBe` ()
+        describe "nip" $
+            it "should remove the second item from the stack." $
+                nip base5 `shouldBe` (base2 :. 6 :. 8)
+        describe "nip2" $
+            it "should remove the second and third items from the stack." $
+                nip2 base5 `shouldBe` (base2 :. 8)
         describe "rotr" $
             it "should rotate the top 3 items right." $
                 rotr base5 `shouldBe` (base2 :. 8 :. 6 :. 7)
         describe "rotl" $
-            it "shold rotate the top 3 items left." $
+            it "should rotate the top 3 items left." $
                 rotl base5 `shouldBe` (base2 :. 7 :. 8 :. 6)
 
 tests :: TestTree
