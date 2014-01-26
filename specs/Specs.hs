@@ -60,6 +60,14 @@ specs = do
             it "should rotate the top 3 items left." $
                 rotl base5 `shouldBe` (base2 :. 7 :. 8 :. 6)
 
+-- swapd :: s :. a :. b :. c -> s :. b :. a :. c
+-- dup   :: s :. a -> s :. a :. a
+-- dup2  :: s :. a :. b -> s :. a :. b :. a :. b
+-- dupd  :: s :. a :. b -> s :. a :. a :. b
+-- over  :: s :. a :. b -> s :. a :. b :. a
+-- over2 :: s :. a :. b :. c -> s :. a :. b :. c :. a :. b
+-- pick  :: s :. a :. b :. c -> s :. a :. b :. c :. a
+
 tests :: TestTree
 tests = testGroup "sigil"
     [ testCase "language" specs
