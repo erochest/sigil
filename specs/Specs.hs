@@ -27,19 +27,25 @@ specs = do
         it "should be a functor." $
             fmap (+2) base `shouldBe` (() :. 6)
         it "should be able to hold different types." $
-            (base :. ("name" :: T.Text)) `shouldBe`
-                (base :. ("name" :: T.Text))
+            (base :. ("name" :: T.Text)) `shouldBe` (base :. "name")
         it "should have meaningful equality." $
             base `shouldNotBe` (() :. (5 :: Int))
 
-    describe "stack functions" $
+    describe "stack functions" $ do
         describe "swap" $
             it "should swap the top two items on the stack." $
                 swap (base :. (2 :: Int)) `shouldBe` (() :. 2 :. 4)
+        describe "push" $
+            it "should push something onto the top of the stack." $
+                push (2 :: Int) base `shouldBe` (base :. 2)
+        describe "pop" $
+            it "should remove something from the top of the stack." $ do
+                pop (base :. (2 :: Int)) `shouldBe` base
+                pop base `shouldBe` ()
 
 tests :: TestTree
-tests = testGroup "main"
-    [ testCase "something" specs
+tests = testGroup "sigil"
+    [ testCase "language" specs
     ]
 
 main :: IO ()
