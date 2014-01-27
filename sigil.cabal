@@ -17,6 +17,7 @@ cabal-version:       >=1.10
 
 library
   exposed-modules:     Language.Sigil
+                     , Language.Sigil.Execution
                      , Language.Sigil.Stack
                      , Language.Sigil.Types
   -- other-modules:       

@@ -36,7 +36,7 @@ specs = do
         it "should have meaningful equality." $
             base `shouldNotBe` (() :. (5 :: Int))
 
-    describe "stack functions" $ do
+    describe "stack manipulation functions" $ do
         describe "swap" $
             it "should swap the top two items on the stack." $
                 swap (base :. (2 :: Int)) `shouldBe` (() :. 2 :. 4)
@@ -80,6 +80,13 @@ specs = do
         describe "pick" $
             it "should copy the third item to the top of the stack." $
                 pick base5 `shouldBe` (base5 :. 6)
+
+    describe "control words" $ do
+        describe "apply" $
+            it "should execute the function on top of the stack on the stack." $
+                apply (base5 :. fmap (+1)) `shouldBe`
+                    (base2 :. 6 :. 7 :. 9)
+
 
 tests :: TestTree
 tests = testGroup "sigil"
