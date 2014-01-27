@@ -3,6 +3,7 @@
 
 module Language.Sigil.Stack
     ( swap
+    , swapd
     , push
     , pop
     , nip
@@ -17,6 +18,9 @@ import           Language.Sigil.Types
 
 swap :: (s :. a :. b) -> (s :. b :. a)
 swap (s :. a :. b) = s :. b :. a
+
+swapd :: s :. a :. b :. c -> s :. b :. a :. c
+swapd (s :. a :. b :. c) = s :. b :. a :. c
 
 push :: a -> s -> s :. a
 push a s = s :. a

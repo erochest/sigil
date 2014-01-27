@@ -40,6 +40,9 @@ specs = do
         describe "swap" $
             it "should swap the top two items on the stack." $
                 swap (base :. (2 :: Int)) `shouldBe` (() :. 2 :. 4)
+        describe "swapd" $
+            it "should swap the second and third items on the stack." $
+                swapd base5 `shouldBe` (base2 :. 7 :. 6 :. 8)
         describe "push" $
             it "should push something onto the top of the stack." $
                 push (2 :: Int) base `shouldBe` (base :. 2)
@@ -60,7 +63,6 @@ specs = do
             it "should rotate the top 3 items left." $
                 rotl base5 `shouldBe` (base2 :. 7 :. 8 :. 6)
 
--- swapd :: s :. a :. b :. c -> s :. b :. a :. c
 -- dup   :: s :. a -> s :. a :. a
 -- dup2  :: s :. a :. b -> s :. a :. b :. a :. b
 -- dupd  :: s :. a :. b -> s :. a :. a :. b
