@@ -13,6 +13,8 @@ module Language.Sigil.Stack
     , dup
     , dup2
     , dupd
+    , over
+    , over2
     ) where
 
 
@@ -51,3 +53,9 @@ dup2 s@(_ :. a :. b) = s :. a :. b
 
 dupd  :: s :. a :. b -> s :. a :. a :. b
 dupd (s :. a :. b) = s :. a :. a :. b
+
+over  :: s :. a :. b -> s :. a :. b :. a
+over s@(_ :. a :. _) = s :. a
+
+over2 :: s :. a :. b :. c -> s :. a :. b :. c :. a :. b
+over2 s@(_ :. a :. b :. _) = s :. a :. b

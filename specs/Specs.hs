@@ -71,9 +71,13 @@ specs = do
         describe "dupd" $
             it "should duplicate the second item on the stack." $
                 dupd base5 `shouldBe` (base2 :. 6 :. 7 :. 7 :. 8)
+        describe "over" $
+            it "should copy the second item over the top item." $
+                over base2 `shouldBe` (base2 :. 4)
+        describe "over2" $
+            it "should copy the second and third items over the top item." $
+                over2 base5 `shouldBe` (base5 :. 6 :. 7)
 
--- over  :: s :. a :. b -> s :. a :. b :. a
--- over2 :: s :. a :. b :. c -> s :. a :. b :. c :. a :. b
 -- pick  :: s :. a :. b :. c -> s :. a :. b :. c :. a
 
 tests :: TestTree
