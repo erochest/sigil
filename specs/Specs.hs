@@ -62,10 +62,16 @@ specs = do
         describe "rotl" $
             it "should rotate the top 3 items left." $
                 rotl base5 `shouldBe` (base2 :. 7 :. 8 :. 6)
+        describe "dup" $
+            it "should duplicate the top of the stack." $
+                dup base `shouldBe` (base :. 4)
+        describe "dup2" $
+            it "should duplicate the top two items of the stack." $
+                dup2 base5 `shouldBe` (base5 :. 7 :. 8)
+        describe "dupd" $
+            it "should duplicate the second item on the stack." $
+                dupd base5 `shouldBe` (base2 :. 6 :. 7 :. 7 :. 8)
 
--- dup   :: s :. a -> s :. a :. a
--- dup2  :: s :. a :. b -> s :. a :. b :. a :. b
--- dupd  :: s :. a :. b -> s :. a :. a :. b
 -- over  :: s :. a :. b -> s :. a :. b :. a
 -- over2 :: s :. a :. b :. c -> s :. a :. b :. c :. a :. b
 -- pick  :: s :. a :. b :. c -> s :. a :. b :. c :. a

@@ -10,6 +10,9 @@ module Language.Sigil.Stack
     , nip2
     , rotr
     , rotl
+    , dup
+    , dup2
+    , dupd
     ) where
 
 
@@ -40,3 +43,11 @@ rotr (s :. a :. b :. c) = s :. c :. a :. b
 rotl :: (s :. a :. b :. c) -> (s :. b :. c :. a)
 rotl (s :. a :. b :. c) = s :. b :. c :. a
 
+dup   :: s :. a -> s :. a :. a
+dup s@(_ :. a) = s :. a
+
+dup2  :: s :. a :. b -> s :. a :. b :. a :. b
+dup2 s@(_ :. a :. b) = s :. a :. b
+
+dupd  :: s :. a :. b -> s :. a :. a :. b
+dupd (s :. a :. b) = s :. a :. a :. b
