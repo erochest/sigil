@@ -87,6 +87,14 @@ specs = do
                 apply (base5 :. fmap (+1)) `shouldBe`
                     (base2 :. 6 :. 7 :. 9)
 
+-- dip   :: s :. (s -> s') :. x -> s' :. x
+-- dip2  :: s :. (s -> s') :. x :. y -> s' :. x :. y
+-- dip3  :: s :. (s -> s') :. x :. y :. z -> s' :. x :. y :. z
+-- dip4  :: s :. (s -> s') :. x :. y :. z :. z -> s' :. x :. y :. z :. a
+-- keep  :: s :. x :. (s :. x -> s') -> s' :. x
+-- keep2 :: s :. x :. y :. (s :. x :. y -> s') -> s' :. x :. y
+-- keep3 :: s :. x :. y :. z :. (s :. x :. y :. z -> s') -> s' :. x :. y :. z
+
 
 tests :: TestTree
 tests = testGroup "sigil"
