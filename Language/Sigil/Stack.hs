@@ -15,6 +15,7 @@ module Language.Sigil.Stack
     , dupd
     , over
     , over2
+    , pick
     ) where
 
 
@@ -59,3 +60,6 @@ over s@(_ :. a :. _) = s :. a
 
 over2 :: s :. a :. b :. c -> s :. a :. b :. c :. a :. b
 over2 s@(_ :. a :. b :. _) = s :. a :. b
+
+pick  :: s :. a :. b :. c -> s :. a :. b :. c :. a
+pick s@(_ :. a :. _ :. _) = s :. a

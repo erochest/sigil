@@ -77,8 +77,9 @@ specs = do
         describe "over2" $
             it "should copy the second and third items over the top item." $
                 over2 base5 `shouldBe` (base5 :. 6 :. 7)
-
--- pick  :: s :. a :. b :. c -> s :. a :. b :. c :. a
+        describe "pick" $
+            it "should copy the third item to the top of the stack." $
+                pick base5 `shouldBe` (base5 :. 6)
 
 tests :: TestTree
 tests = testGroup "sigil"
