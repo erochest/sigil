@@ -82,18 +82,29 @@ specs = do
                 pick base5 `shouldBe` (base5 :. 6)
 
     describe "control words" $ do
+        let basef = base5 :. fmap (+1)
+            baser = base2 :. 6 :. 7 :. 9
         describe "apply" $
             it "should execute the function on top of the stack on the stack." $
-                apply (base5 :. fmap (+1)) `shouldBe`
-                    (base2 :. 6 :. 7 :. 9)
+                apply basef `shouldBe` baser
+        describe "dip" $
+            it "should apply under the top of the stack." $
+                dip (basef :. 12) `shouldBe` (baser :. 12)
+        describe "dip2" $
+            it "should apply under the top two items on the stack." $
+                dip2 (basef :. 12 :. 13) `shouldBe` (baser :. 12 :. 13)
+        describe "dip3" $
+            it "should apply under the top three items on the stack." $
+                dip3 (basef :. 12 :. 13 :. 14) `shouldBe`
+                    (baser :. 12 :. 13 :. 14)
+        describe "dip4" $
+            it "should apply under the top four items on the stack." $
+                dip4 (basef :. 12 :. 13 :. 14 :. 15) `shouldBe`
+                    (baser :. 12 :. 13 :. 14 :. 15)
 
--- dip   :: s :. (s -> s') :. x -> s' :. x
--- dip2  :: s :. (s -> s') :. x :. y -> s' :. x :. y
--- dip3  :: s :. (s -> s') :. x :. y :. z -> s' :. x :. y :. z
--- dip4  :: s :. (s -> s') :. x :. y :. z :. z -> s' :. x :. y :. z :. a
--- keep  :: s :. x :. (s :. x -> s') -> s' :. x
--- keep2 :: s :. x :. y :. (s :. x :. y -> s') -> s' :. x :. y
--- keep3 :: s :. x :. y :. z :. (s :. x :. y :. z -> s') -> s' :. x :. y :. z
+-- keep  :: s :. x :. (s :. x :> s') -> s' :. x
+-- keep2 :: s :. x :. y :. (s :. x :. y :> s') -> s' :. x :. y
+-- keep3 :: s :. x :. y :. z :. (s :. x :. y :. z :> s') -> s' :. x :. y :. z
 
 
 tests :: TestTree

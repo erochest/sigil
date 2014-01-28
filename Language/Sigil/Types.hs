@@ -3,7 +3,7 @@
 
 module Language.Sigil.Types
     ( (:.)(..)
-    , SigilFn
+    , (:>)
     ) where
 
 
@@ -17,5 +17,6 @@ data s :. a = !s :. !a
 instance Functor ((:.) s) where
     fmap f (s :. a) = s :. f a
 
-type SigilFn s s' = s -> s'
+infixl 2 :>
+type s :> s' = s -> s'
 
