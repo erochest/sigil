@@ -101,10 +101,17 @@ specs = do
             it "should apply under the top four items on the stack." $
                 dip4 (basef :. 12 :. 13 :. 14 :. 15) `shouldBe`
                     (baser :. 12 :. 13 :. 14 :. 15)
-
--- keep  :: s :. x :. (s :. x :> s') -> s' :. x
--- keep2 :: s :. x :. y :. (s :. x :. y :> s') -> s' :. x :. y
--- keep3 :: s :. x :. y :. z :. (s :. x :. y :. z :> s') -> s' :. x :. y :. z
+        describe "keep" $
+            it "should apply to the current stack, but keep the top." $
+                keep (base :. 42 :. fmap (+1)) `shouldBe` (base :. 43 :. 42)
+        describe "keep2" $
+            it "should apply to the current stack, but keep the top." $
+                keep2 (base :. 42 :. 13 :. fmap (+1)) `shouldBe`
+                    (base :. 42 :. 14 :. 42 :. 13)
+        describe "keep3" $
+            it "should apply to the current stack, but keep the top." $
+                keep3 (base :. 42 :. 13 :. 99 :. fmap (+1)) `shouldBe`
+                    (base :. 42 :. 13 :. 100 :. 42 :. 13 :. 99)
 
 
 tests :: TestTree
