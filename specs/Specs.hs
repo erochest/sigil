@@ -25,6 +25,7 @@ specs = do
         base5 = base2 :. (6 :: Int)
                       :. (7 :: Int)
                       :. (8 :: Int)
+        inc   = (fmap (+1)) :: ((s :. Int) :> (s :. Int))
 
     describe "stack type" $ do
         it "should take unit as base." $
@@ -82,7 +83,7 @@ specs = do
                 pick base5 `shouldBe` (base5 :. 6)
 
     describe "control words" $ do
-        let basef = base5 :. fmap (+1)
+        let basef = base5 :. inc
             baser = base2 :. 6 :. 7 :. 9
         describe "apply" $
             it "should execute the function on top of the stack on the stack." $
@@ -103,14 +104,14 @@ specs = do
                     (baser :. 12 :. 13 :. 14 :. 15)
         describe "keep" $
             it "should apply to the current stack, but keep the top." $
-                keep (base :. 42 :. fmap (+1)) `shouldBe` (base :. 43 :. 42)
+                keep (base :. 42 :. inc) `shouldBe` (base :. 43 :. 42)
         describe "keep2" $
             it "should apply to the current stack, but keep the top." $
-                keep2 (base :. 42 :. 13 :. fmap (+1)) `shouldBe`
+                keep2 (base :. 42 :. 13 :. inc) `shouldBe`
                     (base :. 42 :. 14 :. 42 :. 13)
         describe "keep3" $
             it "should apply to the current stack, but keep the top." $
-                keep3 (base :. 42 :. 13 :. 99 :. fmap (+1)) `shouldBe`
+                keep3 (base :. 42 :. 13 :. 99 :. inc) `shouldBe`
                     (base :. 42 :. 13 :. 100 :. 42 :. 13 :. 99)
 
 
