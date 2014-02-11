@@ -5,14 +5,14 @@
 
 module Language.Sigil.Types
     ( (:.)(..)
+    , (:-)(..)
     , (:>)
     , Sigil(..)
     , SigilProgram
     ) where
 
 
-import           Data.Functor
-
+import           Control.Arrow
 import           Control.Monad.Free
 
 
@@ -26,8 +26,12 @@ instance Functor ((:.) s) where
 infixl 2 :>
 type s :> s' = s -> s'
 
-data Sigil s next
-    = Push s next
+infixl 3 :-
+data s :- s' = !s :- !s'
+              deriving (Show, Eq)
+
+data Sigil a next
+    = Push a next
     | Pop next
     deriving (Functor)
 
