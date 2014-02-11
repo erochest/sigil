@@ -18,11 +18,13 @@ cabal-version:       >=1.10
 library
   exposed-modules:     Language.Sigil
                      , Language.Sigil.Execution
+                     , Language.Sigil.Show
                      , Language.Sigil.Stack
                      , Language.Sigil.Types
   -- other-modules:       
   -- other-extensions:    
   build-depends:       base >=4.6 && <4.7
+                     , free
   -- hs-source-dirs:      
   default-language:    Haskell2010
 

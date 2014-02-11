@@ -1,13 +1,19 @@
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE GADTs         #-}
 {-# LANGUAGE TypeOperators #-}
 
 
 module Language.Sigil.Types
     ( (:.)(..)
     , (:>)
+    , Sigil(..)
+    , SigilProgram
     ) where
 
 
-import           Data.Functor ()
+import           Data.Functor
+
+import           Control.Monad.Free
 
 
 infixl 1 :.
@@ -19,4 +25,11 @@ instance Functor ((:.) s) where
 
 infixl 2 :>
 type s :> s' = s -> s'
+
+data Sigil s next
+    = Push s next
+    | Pop next
+    deriving (Functor)
+
+type SigilProgram a = Free (Sigil a)
 
