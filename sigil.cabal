@@ -19,7 +19,7 @@ library
   exposed-modules:     Sigil
   -- other-modules:       
   -- other-extensions:    
-  build-depends:       base >=4.6 && <4.7
+  build-depends:       base >=4.6 && <5
                      , free
   -- hs-source-dirs:      
   default-language:    Haskell2010
@@ -29,13 +29,13 @@ test-suite sigil-specs
   ghc-options:         -threaded -rtsopts
   hs-source-dirs:      specs
   main-is:             Specs.hs
-  build-depends:         base       == 4.6.*
+  build-depends:         base
                        , sigil
                        , tasty
                        , tasty-golden
                        , tasty-quickcheck
-                       , tasty-hspec
-                       , hspec
+                       -- , tasty-hspec
+                       -- , hspec
                        , QuickCheck
                        , text
   default-language:    Haskell2010
